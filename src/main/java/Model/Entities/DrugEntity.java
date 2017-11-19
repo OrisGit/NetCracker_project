@@ -18,9 +18,6 @@ public class DrugEntity {
     private PharmachologicEffectEntity pharmachologicEffect;
     private TherapeuticEffectEntity therapeuticEffect;
     private String description;
-
-    private Set<PriceEntity> prices = new HashSet<>();
-
     public DrugEntity() {
     }
 
@@ -106,15 +103,6 @@ public class DrugEntity {
         this.description = description;
     }
 
-    @OneToMany(mappedBy = "drug")
-    public Set<PriceEntity> getPrices() {
-        return prices;
-    }
-
-    public void setPrices(Set<PriceEntity> prices) {
-        this.prices = prices;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -131,8 +119,7 @@ public class DrugEntity {
             return false;
         if (therapeuticEffect != null ? !therapeuticEffect.equals(that.therapeuticEffect) : that.therapeuticEffect != null)
             return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        return prices != null ? prices.equals(that.prices) : that.prices == null;
+        return description != null ? !description.equals(that.description) : that.description != null;
     }
 
     @Override
@@ -145,7 +132,6 @@ public class DrugEntity {
         result = 31 * result + (pharmachologicEffect != null ? pharmachologicEffect.hashCode() : 0);
         result = 31 * result + (therapeuticEffect != null ? therapeuticEffect.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (prices != null ? prices.hashCode() : 0);
         return result;
     }
 
@@ -160,7 +146,6 @@ public class DrugEntity {
                 ", pharmachologicEffect=" + pharmachologicEffect +
                 ", therapeuticEffect=" + therapeuticEffect +
                 ", description='" + description + '\'' +
-                ", drugstores=" + prices +
                 '}';
     }
 }

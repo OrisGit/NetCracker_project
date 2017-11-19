@@ -22,11 +22,11 @@ public class DataBaseModel implements Model {
         DetachedCriteria detachedCriteria = DetachedCriteria.forClass(DrugEntity.class);
 
         if(parameters.getDrug_id()!=null){
-            detachedCriteria.add(Restrictions.eq("drugId",parameters.getDrug_id()));
+            detachedCriteria.add(Restrictions.eq("id",parameters.getDrug_id()));
         }else{
 
             if(parameters.getDrug_name()!=null){
-                detachedCriteria.add(Restrictions.eq("dname",parameters.getDrug_name()));
+                detachedCriteria.add(Restrictions.eq("name",parameters.getDrug_name()));
             }
 
             if(parameters.getDrug_active_ingredient()!=null){
@@ -44,11 +44,11 @@ public class DataBaseModel implements Model {
 
 
         }
-        try(Session session = connector.getSesion()){
+        Session session = connector.getSesion();
             session.beginTransaction();
 
             result = detachedCriteria.getExecutableCriteria(session).list();
-        }
+
         return result;
     }
 

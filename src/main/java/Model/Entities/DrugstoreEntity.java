@@ -16,8 +16,6 @@ public class DrugstoreEntity {
     private String workingHours;
     private Short isRoundTheClock;
 
-    private Set<PriceEntity> prices = new HashSet<>();
-
     public DrugstoreEntity() {
     }
 
@@ -102,15 +100,6 @@ public class DrugstoreEntity {
 
     public void setIsRoundTheClock(Short isRoundTheClock) {
         this.isRoundTheClock = isRoundTheClock;
-    }
-
-    @OneToMany(mappedBy = "drugstore")
-    public Set<PriceEntity> getPrices() {
-        return prices;
-    }
-
-    public void setPrices(Set<PriceEntity> prices) {
-        this.prices = prices;
     }
 
     @Override

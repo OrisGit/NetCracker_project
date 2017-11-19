@@ -11,8 +11,6 @@ public class TherapeuticEffectEntity {
     private String name;
     private String description;
 
-    private Set<DrugEntity> drugs = new HashSet<>();
-
     public TherapeuticEffectEntity() {
     }
 
@@ -47,15 +45,6 @@ public class TherapeuticEffectEntity {
         this.description = description;
     }
 
-    @OneToMany(mappedBy = "therapeuticEffect")
-    public Set<DrugEntity> getDrugs() {
-        return drugs;
-    }
-
-    public void setDrugs(Set<DrugEntity> drugs) {
-        this.drugs = drugs;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,8 +54,7 @@ public class TherapeuticEffectEntity {
 
         if (!id.equals(that.id)) return false;
         if (!name.equals(that.name)) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        return drugs != null ? drugs.equals(that.drugs) : that.drugs == null;
+        return description != null ? !description.equals(that.description) : that.description != null;
     }
 
     @Override
@@ -74,7 +62,6 @@ public class TherapeuticEffectEntity {
         int result = id.hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (drugs != null ? drugs.hashCode() : 0);
         return result;
     }
 
@@ -84,7 +71,6 @@ public class TherapeuticEffectEntity {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", drugs=" + drugs +
                 '}';
     }
 }
