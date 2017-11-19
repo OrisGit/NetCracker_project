@@ -21,8 +21,10 @@ public class Parameters {
     private final BigDecimal drug_max_cost;
     private final String drug_p_effect;
     private final String drug_t_effect;
+    private final Long drug_id;
+    private final Long drugstore_id;
 
-    public Parameters(String drugstore_name, String drugstore_address_district, String drugstore_address_street, String drugstore_address_building, Boolean drugstore_is_round_the_clock, String drug_name, String drug_manufacturer, String drug_active_ingredient, BigDecimal drug_max_cost, String drug_p_effect, String drug_t_effect) {
+    public Parameters(String drugstore_name, String drugstore_address_district, String drugstore_address_street, String drugstore_address_building, Boolean drugstore_is_round_the_clock, String drug_name, String drug_manufacturer, String drug_active_ingredient, BigDecimal drug_max_cost, String drug_p_effect, String drug_t_effect, Long drug_id, Long drugstore_id) {
         this.drugstore_name = drugstore_name;
         this.drugstore_address_district = drugstore_address_district;
         this.drugstore_address_street = drugstore_address_street;
@@ -34,6 +36,8 @@ public class Parameters {
         this.drug_max_cost = drug_max_cost;
         this.drug_p_effect = drug_p_effect;
         this.drug_t_effect = drug_t_effect;
+        this.drug_id = drug_id;
+        this.drugstore_id = drugstore_id;
     }
 
     public String getDrugstore_name() {
@@ -78,5 +82,13 @@ public class Parameters {
 
     public String getDrug_t_effect() {
         return drug_t_effect;
+    }
+
+    public Long getDrug_id() {
+        return drug_id;
+    }
+
+    public Long getDrugstore_id() {
+        return drugstore_id;
     }
 }

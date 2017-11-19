@@ -2,10 +2,6 @@ package Prameters;
 
 import java.math.BigDecimal;
 
-/**
- * Builder параметров запроса см. парттер Builder;
- * @see Parameters;
- */
 public class ParametersBuilder {
     private String drugstore_name = null;
     private String drugstore_address_district = null;
@@ -18,6 +14,8 @@ public class ParametersBuilder {
     private BigDecimal drug_max_cost = null;
     private String drug_p_effect = null;
     private String drug_t_effect = null;
+    private Long drug_id = null;
+    private Long drugstore_id = null;
 
     public ParametersBuilder setDrugstore_name(String drugstore_name) {
         this.drugstore_name = drugstore_name;
@@ -74,7 +72,17 @@ public class ParametersBuilder {
         return this;
     }
 
+    public ParametersBuilder setDrug_id(Long drug_id) {
+        this.drug_id = drug_id;
+        return this;
+    }
+
+    public ParametersBuilder setDrugstore_id(Long drugstore_id) {
+        this.drugstore_id = drugstore_id;
+        return this;
+    }
+
     public Parameters createParameters() {
-        return new Parameters(drugstore_name, drugstore_address_district, drugstore_address_street, drugstore_address_building, drugstore_is_round_the_clock, drug_name, drug_manufacturer, drug_active_ingredient, drug_max_cost, drug_p_effect, drug_t_effect);
+        return new Parameters(drugstore_name, drugstore_address_district, drugstore_address_street, drugstore_address_building, drugstore_is_round_the_clock, drug_name, drug_manufacturer, drug_active_ingredient, drug_max_cost, drug_p_effect, drug_t_effect, drug_id, drugstore_id);
     }
 }
