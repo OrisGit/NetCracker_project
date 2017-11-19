@@ -1,13 +1,14 @@
 package Event;
 
+import Prameters.Parameters;
+
 /**
  * <p>Описывает объект который содержит в себе информацию о событии и передаётся
  * слушателю в момент наступления события.</p>
- * @param <T> - тип ресурсов которые передаются слушателю.
  * @see ActionListener
  * @see Event
  */
-public interface EventObject<T> {
+public interface EventObject {
     /**
      * Возвращает тип произошедшего события
      * @return {@link Event Event}
@@ -16,7 +17,7 @@ public interface EventObject<T> {
 
     /**
      * Возвращает ресурсы которые соответствуют произошедшему событию
-     * @return ресурсы;
+     * @return параметры запроса;
      */
-    T getEventSource();
+    Parameters getEventSource();
 }

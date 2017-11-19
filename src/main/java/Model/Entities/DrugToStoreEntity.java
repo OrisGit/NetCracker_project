@@ -1,12 +1,11 @@
 package Model.Entities;
 
-import Model.Model;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "DRUGS_STORES", schema = "SYSTEM")
-@IdClass(Model.Entities.DrugStoreEntityPK.class)
+@IdClass(DrugStoreEntityPK.class)
 public class DrugToStoreEntity {
     private long drugstoreId;
     private long drugId;
