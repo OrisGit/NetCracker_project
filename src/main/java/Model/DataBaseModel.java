@@ -1,16 +1,10 @@
 package Model;
 
-import Model.Entities.DrugEntity;
-import Model.Entities.DrugstoreEntity;
 import Prameters.Parameters;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Restrictions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DataBaseModel implements Model {

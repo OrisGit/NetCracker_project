@@ -1,63 +1,58 @@
 package Model.Entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "THERAPEUTIC_EFFECT", schema = "SYSTEM")
+@Table(name = "THERAPEUTIC_EFFECT")
 public class TherapeuticEffectEntity {
-    private long tEffectId;
-    private String tname;
-    private String tdescription;
+    private Long id;
+    private String name;
+    private String description;
 
-    @Id
-    @Column(name = "T_EFFECT_ID")
-    public long gettEffectId() {
-        return tEffectId;
+    private Set<DrugEntity> drugs = new HashSet<>();
+
+    public TherapeuticEffectEntity() {
     }
 
-    public void settEffectId(long tEffectId) {
-        this.tEffectId = tEffectId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "T_EFFECT_ID", nullable = false, unique = true)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Basic
-    @Column(name = "TNAME")
-    public String getTname() {
-        return tname;
+    @Column(name = "TNAME", nullable = false)
+    public String getName() {
+        return name;
     }
 
-    public void setTname(String tname) {
-        this.tname = tname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Basic
     @Column(name = "TDESCRIPTION")
-    public String getTdescription() {
-        return tdescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setTdescription(String tdescription) {
-        this.tdescription = tdescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TherapeuticEffectEntity that = (TherapeuticEffectEntity) o;
-
-        if (tEffectId != that.tEffectId) return false;
-        if (tname != null ? !tname.equals(that.tname) : that.tname != null) return false;
-        if (tdescription != null ? !tdescription.equals(that.tdescription) : that.tdescription != null) return false;
-
-        return true;
+    @OneToMany(mappedBy = "therapeuticEffect")
+    public Set<DrugEntity> getDrugs() {
+        return drugs;
     }
 
-    @Override
-    public int hashCode() {
-        int result = (int) (tEffectId ^ (tEffectId >>> 32));
-        result = 31 * result + (tname != null ? tname.hashCode() : 0);
-        result = 31 * result + (tdescription != null ? tdescription.hashCode() : 0);
-        return result;
+    public void setDrugs(Set<DrugEntity> drugs) {
+        this.drugs = drugs;
     }
 }

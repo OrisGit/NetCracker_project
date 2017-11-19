@@ -3,65 +3,71 @@ package Model.Entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "DRUGSTORES", schema = "SYSTEM")
+@Table(name = "DRUGSTORES")
 public class DrugstoreEntity {
-    private long drugstoreId;
-    private String tname;
-    private String addressDistrict;
-    private String addressStreet;
-    private String addressBuilding;
+    private Long id;
+    private String name;
+    private String district;
+    private String street;
+    private String building;
     private Long phone;
     private String workingHours;
-    private Integer isRoundTheClock;
+    private Short isRoundTheClock;
 
-    @Id
-    @Column(name = "DRUGSTORE_ID")
-    public long getDrugstoreId() {
-        return drugstoreId;
+    public DrugstoreEntity() {
     }
 
-    public void setDrugstoreId(long drugstoreId) {
-        this.drugstoreId = drugstoreId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "DRUGSTORE_ID", nullable = false, unique = true)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Basic
-    @Column(name = "TNAME")
-    public String getTname() {
-        return tname;
+    @Column(name = "SNAME", nullable = false)
+    public String getName() {
+        return name;
     }
 
-    public void setTname(String tname) {
-        this.tname = tname;
+    public void setName(String name) {
+        this.name = name;
     }
+
 
     @Basic
     @Column(name = "ADDRESS_DISTRICT")
-    public String getAddressDistrict() {
-        return addressDistrict;
+    public String getDistrict() {
+        return district;
     }
 
-    public void setAddressDistrict(String addressDistrict) {
-        this.addressDistrict = addressDistrict;
+
+    public void setDistrict(String district) {
+        this.district = district;
     }
 
     @Basic
     @Column(name = "ADDRESS_STREET")
-    public String getAddressStreet() {
-        return addressStreet;
+    public String getStreet() {
+        return street;
     }
 
-    public void setAddressStreet(String addressStreet) {
-        this.addressStreet = addressStreet;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     @Basic
     @Column(name = "ADDRESS_BUILDING")
-    public String getAddressBuilding() {
-        return addressBuilding;
+    public String getBuilding() {
+        return building;
     }
 
-    public void setAddressBuilding(String addressBuilding) {
-        this.addressBuilding = addressBuilding;
+    public void setBuilding(String building) {
+        this.building = building;
     }
 
     @Basic
@@ -86,44 +92,11 @@ public class DrugstoreEntity {
 
     @Basic
     @Column(name = "IS_ROUND_THE_CLOCK")
-    public Integer getIsRoundTheClock() {
+    public Short getIsRoundTheClock() {
         return isRoundTheClock;
     }
 
-    public void setIsRoundTheClock(Integer isRoundTheClock) {
+    public void setIsRoundTheClock(Short isRoundTheClock) {
         this.isRoundTheClock = isRoundTheClock;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DrugstoreEntity that = (DrugstoreEntity) o;
-
-        if (drugstoreId != that.drugstoreId) return false;
-        if (tname != null ? !tname.equals(that.tname) : that.tname != null) return false;
-        if (addressDistrict != null ? !addressDistrict.equals(that.addressDistrict) : that.addressDistrict != null)
-            return false;
-        if (addressStreet != null ? !addressStreet.equals(that.addressStreet) : that.addressStreet != null)
-            return false;
-        if (addressBuilding != null ? !addressBuilding.equals(that.addressBuilding) : that.addressBuilding != null)
-            return false;
-        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
-        if (workingHours != null ? !workingHours.equals(that.workingHours) : that.workingHours != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (drugstoreId ^ (drugstoreId >>> 32));
-        result = 31 * result + (tname != null ? tname.hashCode() : 0);
-        result = 31 * result + (addressDistrict != null ? addressDistrict.hashCode() : 0);
-        result = 31 * result + (addressStreet != null ? addressStreet.hashCode() : 0);
-        result = 31 * result + (addressBuilding != null ? addressBuilding.hashCode() : 0);
-        result = 31 * result + (phone != null ? phone.hashCode() : 0);
-        result = 31 * result + (workingHours != null ? workingHours.hashCode() : 0);
-        return result;
     }
 }

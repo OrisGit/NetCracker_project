@@ -1,45 +1,58 @@
 package Model.Entities;
 
+import com.sun.istack.internal.NotNull;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "DRUGS", schema = "SYSTEM")
+@Table(name = "DRUGS")
 public class DrugEntity {
-    private long drugId;
-    private String dname;
-    private String releaseform;
+
+    private Long id;
+    private String name;
+    private String releaseForm;
     private String manufacturer;
-    private String activeingridient;
+    private String activeIngredient;
+    private PharmachologicEffectEntity pharmachologicEffect;
+    private TherapeuticEffectEntity therapeuticEffect;
     private String description;
 
-    @Id
-    @Column(name = "DRUG_ID")
-    public long getDrugId() {
-        return drugId;
+    private Set<DrugstoreEntity> drugstores = new HashSet<>();
+
+    public DrugEntity() {
     }
 
-    public void setDrugId(long drugId) {
-        this.drugId = drugId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "DRUG_ID", nullable = false, unique = true)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Basic
-    @Column(name = "DNAME")
-    public String getDname() {
-        return dname;
+    @Column(name = "DNAME", nullable = false)
+    public String getName() {
+        return name;
     }
 
-    public void setDname(String dname) {
-        this.dname = dname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Basic
     @Column(name = "RELEASEFORM")
-    public String getReleaseform() {
-        return releaseform;
+    public String getReleaseForm() {
+        return releaseForm;
     }
 
-    public void setReleaseform(String releaseform) {
-        this.releaseform = releaseform;
+    public void setReleaseForm(String releaseForm) {
+        this.releaseForm = releaseForm;
     }
 
     @Basic
@@ -52,14 +65,35 @@ public class DrugEntity {
         this.manufacturer = manufacturer;
     }
 
+
     @Basic
-    @Column(name = "ACTIVEINGRIDIENT")
-    public String getActiveingridient() {
-        return activeingridient;
+    @Column(name = "ACTIVEINGRIDIENT", nullable = false)
+    public String getActiveIngredient() {
+        return activeIngredient;
     }
 
-    public void setActiveingridient(String activeingridient) {
-        this.activeingridient = activeingridient;
+    public void setActiveIngredient(String activeIngredient) {
+        this.activeIngredient = activeIngredient;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "P_EFFECT_ID")
+    public PharmachologicEffectEntity getPharmachologicEffect() {
+        return pharmachologicEffect;
+    }
+
+    public void setPharmachologicEffect(PharmachologicEffectEntity pharmachologicEffect) {
+        this.pharmachologicEffect = pharmachologicEffect;
+    }
+
+    @ManyToOne()
+    @JoinColumn(name = "T_EFFECT_ID")
+    public TherapeuticEffectEntity getTherapeuticEffect() {
+        return therapeuticEffect;
+    }
+
+    public void setTherapeuticEffect(TherapeuticEffectEntity therapeuticEffect) {
+        this.therapeuticEffect = therapeuticEffect;
     }
 
     @Basic
@@ -72,44 +106,12 @@ public class DrugEntity {
         this.description = description;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DrugEntity that = (DrugEntity) o;
-
-        if (drugId != that.drugId) return false;
-        if (dname != null ? !dname.equals(that.dname) : that.dname != null) return false;
-        if (releaseform != null ? !releaseform.equals(that.releaseform) : that.releaseform != null) return false;
-        if (manufacturer != null ? !manufacturer.equals(that.manufacturer) : that.manufacturer != null) return false;
-        if (activeingridient != null ? !activeingridient.equals(that.activeingridient) : that.activeingridient != null)
-            return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-
-        return true;
+    @OneToMany(mappedBy = "")
+    public Set<DrugstoreEntity> getDrugstores() {
+        return drugstores;
     }
 
-    @Override
-    public int hashCode() {
-        int result = (int) (drugId ^ (drugId >>> 32));
-        result = 31 * result + (dname != null ? dname.hashCode() : 0);
-        result = 31 * result + (releaseform != null ? releaseform.hashCode() : 0);
-        result = 31 * result + (manufacturer != null ? manufacturer.hashCode() : 0);
-        result = 31 * result + (activeingridient != null ? activeingridient.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "DrugEntity{" +
-                "drugId=" + drugId +
-                ", dname='" + dname + '\'' +
-                ", releaseform='" + releaseform + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", activeingridient='" + activeingridient + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+    public void setDrugstores(Set<DrugstoreEntity> drugstores) {
+        this.drugstores = drugstores;
     }
 }

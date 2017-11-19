@@ -1,63 +1,58 @@
 package Model.Entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "PHARMACHOLOGIC_EFFECT", schema = "SYSTEM")
+@Table(name = "PHARMACHOLOGIC_EFFECT")
 public class PharmachologicEffectEntity {
-    private long pEffectId;
-    private String pname;
-    private String pdescription;
+    private Long id;
+    private String name;
+    private String description;
 
-    @Id
-    @Column(name = "P_EFFECT_ID")
-    public long getpEffectId() {
-        return pEffectId;
+    private Set<DrugEntity> drugs = new HashSet<DrugEntity>();
+
+    public PharmachologicEffectEntity() {
     }
 
-    public void setpEffectId(long pEffectId) {
-        this.pEffectId = pEffectId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "P_EFFECT_ID", nullable = false, unique = true)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Basic
-    @Column(name = "PNAME")
-    public String getPname() {
-        return pname;
+    @Column(name = "PNAME", nullable = false)
+    public String getName() {
+        return name;
     }
 
-    public void setPname(String pname) {
-        this.pname = pname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Basic
     @Column(name = "PDESCRIPTION")
-    public String getPdescription() {
-        return pdescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setPdescription(String pdescription) {
-        this.pdescription = pdescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        PharmachologicEffectEntity that = (PharmachologicEffectEntity) o;
-
-        if (pEffectId != that.pEffectId) return false;
-        if (pname != null ? !pname.equals(that.pname) : that.pname != null) return false;
-        if (pdescription != null ? !pdescription.equals(that.pdescription) : that.pdescription != null) return false;
-
-        return true;
+    @OneToMany(mappedBy = "pharmachologicEffect")
+    public Set<DrugEntity> getDrugs() {
+        return drugs;
     }
 
-    @Override
-    public int hashCode() {
-        int result = (int) (pEffectId ^ (pEffectId >>> 32));
-        result = 31 * result + (pname != null ? pname.hashCode() : 0);
-        result = 31 * result + (pdescription != null ? pdescription.hashCode() : 0);
-        return result;
+    public void setDrugs(Set<DrugEntity> drugs) {
+        this.drugs = drugs;
     }
 }
