@@ -19,7 +19,7 @@ public class DrugEntity {
     private TherapeuticEffectEntity therapeuticEffect;
     private String description;
 
-    private Set<DrugstoreEntity> drugstores = new HashSet<>();
+    private Set<PriceEntity> prices = new HashSet<>();
 
     public DrugEntity() {
     }
@@ -106,12 +106,61 @@ public class DrugEntity {
         this.description = description;
     }
 
-    @OneToMany(mappedBy = "")
-    public Set<DrugstoreEntity> getDrugstores() {
-        return drugstores;
+    @OneToMany(mappedBy = "drug")
+    public Set<PriceEntity> getPrices() {
+        return prices;
     }
 
-    public void setDrugstores(Set<DrugstoreEntity> drugstores) {
-        this.drugstores = drugstores;
+    public void setPrices(Set<PriceEntity> prices) {
+        this.prices = prices;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DrugEntity that = (DrugEntity) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!name.equals(that.name)) return false;
+        if (releaseForm != null ? !releaseForm.equals(that.releaseForm) : that.releaseForm != null) return false;
+        if (manufacturer != null ? !manufacturer.equals(that.manufacturer) : that.manufacturer != null) return false;
+        if (!activeIngredient.equals(that.activeIngredient)) return false;
+        if (pharmachologicEffect != null ? !pharmachologicEffect.equals(that.pharmachologicEffect) : that.pharmachologicEffect != null)
+            return false;
+        if (therapeuticEffect != null ? !therapeuticEffect.equals(that.therapeuticEffect) : that.therapeuticEffect != null)
+            return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        return prices != null ? prices.equals(that.prices) : that.prices == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (releaseForm != null ? releaseForm.hashCode() : 0);
+        result = 31 * result + (manufacturer != null ? manufacturer.hashCode() : 0);
+        result = 31 * result + activeIngredient.hashCode();
+        result = 31 * result + (pharmachologicEffect != null ? pharmachologicEffect.hashCode() : 0);
+        result = 31 * result + (therapeuticEffect != null ? therapeuticEffect.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (prices != null ? prices.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DrugEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", releaseForm='" + releaseForm + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", activeIngredient='" + activeIngredient + '\'' +
+                ", pharmachologicEffect=" + pharmachologicEffect +
+                ", therapeuticEffect=" + therapeuticEffect +
+                ", description='" + description + '\'' +
+                ", drugstores=" + prices +
+                '}';
     }
 }

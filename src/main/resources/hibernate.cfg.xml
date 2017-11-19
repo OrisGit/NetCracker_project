@@ -8,11 +8,11 @@
         <property name="connection.driver_class">oracle.jdbc.OracleDriver</property>
         <property name="connection.username">ORIS</property>
         <property name="connection.password">oris</property>
-        <property name="hbm2ddl.auto">update</property>
+        <property name="hbm2ddl.auto">validate</property>
 
         <mapping class="Model.Entities.DrugEntity"/>
         <mapping class="Model.Entities.DrugstoreEntity"/>
-        <mapping class="Model.Entities.DrugToStoreEntity"/>
+        <mapping class="Model.Entities.PriceEntity"/>
         <mapping class="Model.Entities.PharmachologicEffectEntity"/>
         <mapping class="Model.Entities.TherapeuticEffectEntity"/>
     </session-factory>

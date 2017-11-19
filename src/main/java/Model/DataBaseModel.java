@@ -1,5 +1,7 @@
 package Model;
 
+import Model.Entities.DrugEntity;
+import Model.Entities.DrugstoreEntity;
 import Prameters.Parameters;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;

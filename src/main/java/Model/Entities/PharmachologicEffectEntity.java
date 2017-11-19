@@ -55,4 +55,36 @@ public class PharmachologicEffectEntity {
     public void setDrugs(Set<DrugEntity> drugs) {
         this.drugs = drugs;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PharmachologicEffectEntity that = (PharmachologicEffectEntity) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!name.equals(that.name)) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        return drugs != null ? drugs.equals(that.drugs) : that.drugs == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (drugs != null ? drugs.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "PharmachologicEffectEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", drugs=" + drugs +
+                '}';
+    }
 }

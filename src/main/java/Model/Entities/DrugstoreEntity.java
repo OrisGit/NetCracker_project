@@ -1,6 +1,8 @@
 package Model.Entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "DRUGSTORES")
@@ -13,6 +15,8 @@ public class DrugstoreEntity {
     private Long phone;
     private String workingHours;
     private Short isRoundTheClock;
+
+    private Set<PriceEntity> prices = new HashSet<>();
 
     public DrugstoreEntity() {
     }
@@ -98,5 +102,58 @@ public class DrugstoreEntity {
 
     public void setIsRoundTheClock(Short isRoundTheClock) {
         this.isRoundTheClock = isRoundTheClock;
+    }
+
+    @OneToMany(mappedBy = "drugstore")
+    public Set<PriceEntity> getPrices() {
+        return prices;
+    }
+
+    public void setPrices(Set<PriceEntity> prices) {
+        this.prices = prices;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DrugstoreEntity that = (DrugstoreEntity) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!name.equals(that.name)) return false;
+        if (district != null ? !district.equals(that.district) : that.district != null) return false;
+        if (street != null ? !street.equals(that.street) : that.street != null) return false;
+        if (building != null ? !building.equals(that.building) : that.building != null) return false;
+        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
+        if (workingHours != null ? !workingHours.equals(that.workingHours) : that.workingHours != null) return false;
+        return isRoundTheClock != null ? isRoundTheClock.equals(that.isRoundTheClock) : that.isRoundTheClock == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (district != null ? district.hashCode() : 0);
+        result = 31 * result + (street != null ? street.hashCode() : 0);
+        result = 31 * result + (building != null ? building.hashCode() : 0);
+        result = 31 * result + (phone != null ? phone.hashCode() : 0);
+        result = 31 * result + (workingHours != null ? workingHours.hashCode() : 0);
+        result = 31 * result + (isRoundTheClock != null ? isRoundTheClock.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DrugstoreEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", district='" + district + '\'' +
+                ", street='" + street + '\'' +
+                ", building='" + building + '\'' +
+                ", phone=" + phone +
+                ", workingHours='" + workingHours + '\'' +
+                ", isRoundTheClock=" + isRoundTheClock +
+                '}';
     }
 }

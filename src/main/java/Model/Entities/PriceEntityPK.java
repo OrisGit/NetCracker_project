@@ -1,16 +1,15 @@
 package Model.Entities;
 
-import javax.persistence.*;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
-@Entity
-@Table(name = "DRUGS_STORES")
-@IdClass(PriceEntityPK.class)
-public class PriceEntity {
+public class PriceEntityPK implements Serializable{
     private DrugEntity drug;
     private DrugstoreEntity drugstore;
-    private Long cost;
 
-    public PriceEntity() {
+    public PriceEntityPK() {
     }
 
     @Id
@@ -35,42 +34,21 @@ public class PriceEntity {
         this.drugstore = drugstore;
     }
 
-    @Basic
-    @Column(name = "COST")
-    public Long getCost() {
-        return cost;
-    }
-
-    public void setCost(Long cost) {
-        this.cost = cost;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PriceEntity that = (PriceEntity) o;
+        PriceEntityPK that = (PriceEntityPK) o;
 
         if (!drug.equals(that.drug)) return false;
-        if (!drugstore.equals(that.drugstore)) return false;
-        return cost != null ? cost.equals(that.cost) : that.cost == null;
+        return drugstore.equals(that.drugstore);
     }
 
     @Override
     public int hashCode() {
         int result = drug.hashCode();
         result = 31 * result + drugstore.hashCode();
-        result = 31 * result + (cost != null ? cost.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "PriceEntity{" +
-                "drug=" + drug +
-                ", drugstore=" + drugstore +
-                ", cost=" + cost +
-                '}';
     }
 }

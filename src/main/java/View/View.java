@@ -1,6 +1,8 @@
 package View;
 
 import Event.ActionListener;
+import Model.Entities.DrugEntity;
+import Model.Entities.DrugstoreEntity;
 
 import java.util.List;
 
