@@ -12,6 +12,7 @@ public class DrugstoreEntity {
     private String addressBuilding;
     private Long phone;
     private String workingHours;
+    private Integer isRoundTheClock;
 
     @Id
     @Column(name = "DRUGSTORE_ID")
@@ -81,6 +82,16 @@ public class DrugstoreEntity {
 
     public void setWorkingHours(String workingHours) {
         this.workingHours = workingHours;
+    }
+
+    @Basic
+    @Column(name = "IS_ROUND_THE_CLOCK")
+    public Integer getIsRoundTheClock() {
+        return isRoundTheClock;
+    }
+
+    public void setIsRoundTheClock(Integer isRoundTheClock) {
+        this.isRoundTheClock = isRoundTheClock;
     }
 
     @Override

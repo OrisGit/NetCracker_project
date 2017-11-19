@@ -2,6 +2,7 @@ package Model.Entities;
 
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "DRUGS_STORES", schema = "SYSTEM")
@@ -9,6 +10,7 @@ import javax.persistence.*;
 public class DrugToStoreEntity {
     private long drugstoreId;
     private long drugId;
+    private BigDecimal cost;
 
     @Id
     @Column(name = "DRUGSTORE_ID")
@@ -28,6 +30,16 @@ public class DrugToStoreEntity {
 
     public void setDrugId(long drugId) {
         this.drugId = drugId;
+    }
+
+    @Id
+    @Column(name = "COST")
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 
     @Override

@@ -100,4 +100,16 @@ public class DrugEntity {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "DrugEntity{" +
+                "drugId=" + drugId +
+                ", dname='" + dname + '\'' +
+                ", releaseform='" + releaseform + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", activeingridient='" + activeingridient + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
