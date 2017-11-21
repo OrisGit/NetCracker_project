@@ -46,7 +46,12 @@ public class ViewStub implements View {
         if(sc.next().equals("1")){
             ParametersBuilder builder = new ParametersBuilder();
             Parameters parameters = builder.createParameters();
-            EventObject eventObject = new EventObjectImpl(parameters,Event.GET_DRUGS);
+            EventObject eventObject = new EventObjectImpl(parameters,Event.GET_ALL_DRUGSTORE);
+            actionListener.actionPerfomed(eventObject);
+        }else{
+            ParametersBuilder builder = new ParametersBuilder();
+            Parameters parameters = builder.createParameters();
+            EventObject eventObject = new EventObjectImpl(parameters,Event.GET_ALL_DRUGS);
             actionListener.actionPerfomed(eventObject);
         }
     }

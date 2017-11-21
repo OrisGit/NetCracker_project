@@ -1,13 +1,19 @@
 package Model.DAO;
 
 import Model.Entities.DrugEntity;
+import Model.Interfaces.DrugDAO;
 import Prameters.Parameters;
 import org.hibernate.mapping.Collection;
 
-public class DrugDAOImpl extends DAOImpl<DrugEntity>{
+import java.util.List;
 
-    public Collection getDrugsByParameter(Parameters parameters) {
-        return null;
+public class DrugDAOImpl extends DAOImpl<DrugEntity> implements DrugDAO{
+
+    public DrugEntity getById(Long id) throws DAOException {
+        return super.getById(DrugEntity.class, id);
     }
 
+    public List<DrugEntity> getAll() throws DAOException {
+        return super.getAll(DrugEntity.class);
+    }
 }
