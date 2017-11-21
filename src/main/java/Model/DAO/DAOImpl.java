@@ -63,7 +63,7 @@ public abstract class DAOImpl<T> implements DAO<T> {
     }
 
     @Override
-    public Collection<T> getAll(Class<T> clazz) throws DAOException {
+    public List<T> getAll(Class<T> clazz) throws DAOException {
         Session session = null;
         List<T> entities;
         try{

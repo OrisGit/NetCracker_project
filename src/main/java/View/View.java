@@ -39,4 +39,6 @@ public interface View {
      */
     void displayError(String message);
 
+    void run();
+
 }
