@@ -1,4 +1,4 @@
-package Model;
+package Model.Interfaces;
 
 import Model.Entities.DrugEntity;
 import Model.Entities.DrugstoreEntity;

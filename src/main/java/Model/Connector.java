@@ -6,9 +6,9 @@ import org.hibernate.cfg.Configuration;
 
 public class Connector {
 
-    private SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory;
 
-    public Connector() {
+    private static void connect() {
         try {
             Configuration configuration = new Configuration();
             configuration.configure("hibernate.cfg.xml");
@@ -19,7 +19,10 @@ public class Connector {
         }
     }
 
-    public Session getSesion(){
+    public static Session getSesion(){
+        if(sessionFactory==null){
+            connect();
+        }
         return sessionFactory.openSession();
     }
 }

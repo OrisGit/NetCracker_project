@@ -1,88 +1,86 @@
 package Prameters;
 
-import java.math.BigDecimal;
-
 public class ParametersBuilder {
-    private String drugstore_name = null;
-    private String drugstore_address_district = null;
-    private String drugstore_address_street = null;
-    private String drugstore_address_building = null;
-    private Boolean drugstore_is_round_the_clock = null;
-    private String drug_name = null;
-    private String drug_manufacturer = null;
-    private String drug_active_ingredient = null;
-    private BigDecimal drug_max_cost = null;
-    private String drug_p_effect = null;
-    private String drug_t_effect = null;
-    private Long drug_id = null;
-    private Long drugstore_id = null;
+    private String drugstoreName = null;
+    private String drugstoreAddressDistrict = null;
+    private String drugstoreAddressStreet = null;
+    private String drugstoreAddressBuilding = null;
+    private Boolean drugstoreIsRoundTheClock = null;
+    private String drugName = null;
+    private String drugManufacturer = null;
+    private String drugActiveIngredient = null;
+    private Long drugMaxCost = null;
+    private String drugPEffect = null;
+    private String drugTEffect = null;
+    private Long drugId = null;
+    private Long drugstoreId = null;
 
-    public ParametersBuilder setDrugstore_name(String drugstore_name) {
-        this.drugstore_name = drugstore_name;
+    public ParametersBuilder setDrugstoreName(String drugstoreName) {
+        this.drugstoreName = drugstoreName;
         return this;
     }
 
-    public ParametersBuilder setDrugstore_address_district(String drugstore_address_district) {
-        this.drugstore_address_district = drugstore_address_district;
+    public ParametersBuilder setDrugstoreAddressDistrict(String drugstoreAddressDistrict) {
+        this.drugstoreAddressDistrict = drugstoreAddressDistrict;
         return this;
     }
 
-    public ParametersBuilder setDrugstore_address_street(String drugstore_address_street) {
-        this.drugstore_address_street = drugstore_address_street;
+    public ParametersBuilder setDrugstoreAddressStreet(String drugstoreAddressStreet) {
+        this.drugstoreAddressStreet = drugstoreAddressStreet;
         return this;
     }
 
-    public ParametersBuilder setDrugstore_address_building(String drugstore_address_building) {
-        this.drugstore_address_building = drugstore_address_building;
+    public ParametersBuilder setDrugstoreAddressBuilding(String drugstoreAddressBuilding) {
+        this.drugstoreAddressBuilding = drugstoreAddressBuilding;
         return this;
     }
 
-    public ParametersBuilder setDrugstore_is_round_the_clock(Boolean drugstore_is_round_the_clock) {
-        this.drugstore_is_round_the_clock = drugstore_is_round_the_clock;
+    public ParametersBuilder setDrugstoreIsRoundTheClock(Boolean drugstoreIsRoundTheClock) {
+        this.drugstoreIsRoundTheClock = drugstoreIsRoundTheClock;
         return this;
     }
 
-    public ParametersBuilder setDrug_name(String drug_name) {
-        this.drug_name = drug_name;
+    public ParametersBuilder setDrugName(String drugName) {
+        this.drugName = drugName;
         return this;
     }
 
-    public ParametersBuilder setDrug_manufacturer(String drug_manufacturer) {
-        this.drug_manufacturer = drug_manufacturer;
+    public ParametersBuilder setDrugManufacturer(String drugManufacturer) {
+        this.drugManufacturer = drugManufacturer;
         return this;
     }
 
-    public ParametersBuilder setDrug_active_ingredient(String drug_active_ingredient) {
-        this.drug_active_ingredient = drug_active_ingredient;
+    public ParametersBuilder setDrugActiveIngredient(String drugActiveIngredient) {
+        this.drugActiveIngredient = drugActiveIngredient;
         return this;
     }
 
-    public ParametersBuilder setDrug_max_cost(BigDecimal drug_max_cost) {
-        this.drug_max_cost = drug_max_cost;
+    public ParametersBuilder setDrugMaxCost(Long drugMaxCost) {
+        this.drugMaxCost = drugMaxCost;
         return this;
     }
 
-    public ParametersBuilder setDrug_p_effect(String drug_p_effect) {
-        this.drug_p_effect = drug_p_effect;
+    public ParametersBuilder setDrugPEffect(String drugPEffect) {
+        this.drugPEffect = drugPEffect;
         return this;
     }
 
-    public ParametersBuilder setDrug_t_effect(String drug_t_effect) {
-        this.drug_t_effect = drug_t_effect;
+    public ParametersBuilder setDrugTEffect(String drugTEffect) {
+        this.drugTEffect = drugTEffect;
         return this;
     }
 
-    public ParametersBuilder setDrug_id(Long drug_id) {
-        this.drug_id = drug_id;
+    public ParametersBuilder setDrugId(Long drugId) {
+        this.drugId = drugId;
         return this;
     }
 
-    public ParametersBuilder setDrugstore_id(Long drugstore_id) {
-        this.drugstore_id = drugstore_id;
+    public ParametersBuilder setDrugstoreId(Long drugstoreId) {
+        this.drugstoreId = drugstoreId;
         return this;
     }
 
     public Parameters createParameters() {
-        return new Parameters(drugstore_name, drugstore_address_district, drugstore_address_street, drugstore_address_building, drugstore_is_round_the_clock, drug_name, drug_manufacturer, drug_active_ingredient, drug_max_cost, drug_p_effect, drug_t_effect, drug_id, drugstore_id);
+        return new Parameters(drugstoreName, drugstoreAddressDistrict, drugstoreAddressStreet, drugstoreAddressBuilding, drugstoreIsRoundTheClock, drugName, drugManufacturer, drugActiveIngredient, drugMaxCost, drugPEffect, drugTEffect, drugId, drugstoreId);
     }
 }
