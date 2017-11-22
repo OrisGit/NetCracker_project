@@ -4,12 +4,14 @@ import Event.ActionListener;
 import Event.EventObject;
 import Model.DAO.DrugDAOImpl;
 import Model.DAO.DrugstoreDAOImpl;
+import Model.Interfaces.DrugDAO;
+import Model.Interfaces.DrugstoreDAO;
 import View.*;
 
 public class Controller implements ActionListener{
     View view = new TextView();
-    DrugDAOImpl drugDAO = new DrugDAOImpl();
-    DrugstoreDAOImpl drugstoreDAO = new DrugstoreDAOImpl();
+    DrugDAO drugDAO = new DrugDAOImpl();
+    DrugstoreDAO drugstoreDAO = new DrugstoreDAOImpl();
 
     public void run(){
         view.setActionListener(this);
