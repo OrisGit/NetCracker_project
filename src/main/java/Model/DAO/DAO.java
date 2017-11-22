@@ -1,15 +1,14 @@
 package Model.DAO;
 
 import Model.Connector;
-import Model.Interfaces.DAO;
+import Model.Interfaces.DrugDAO;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 
-import java.util.Collection;
 import java.util.List;
 
-public abstract class DAOImpl<T> implements DAO<T> {
-    @Override
+public abstract class DAO<T> {
+
     public void add(T entity) throws DAOException {
         Session session = null;
         try{
@@ -26,7 +25,6 @@ public abstract class DAOImpl<T> implements DAO<T> {
         }
     }
 
-    @Override
     public void update(T entity) throws DAOException {
         Session session = null;
         try{
@@ -43,7 +41,6 @@ public abstract class DAOImpl<T> implements DAO<T> {
         }
     }
 
-    @Override
     public T getById(Class<T> clazz, Long id) throws DAOException {
         Session session = null;
         T entity;
@@ -62,7 +59,6 @@ public abstract class DAOImpl<T> implements DAO<T> {
         return entity;
     }
 
-    @Override
     public List<T> getAll(Class<T> clazz) throws DAOException {
         Session session = null;
         List<T> entities;
@@ -82,7 +78,6 @@ public abstract class DAOImpl<T> implements DAO<T> {
         return entities;
     }
 
-    @Override
     public void delete(T entity) throws DAOException {
         Session session = null;
         try{
