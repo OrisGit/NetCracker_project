@@ -1,18 +1,13 @@
 package Controller;
 
 import Event.ActionListener;
-import Event.*;
 import Event.EventObject;
 import Model.DAO.DrugDAOImpl;
 import Model.DAO.DrugstoreDAOImpl;
-import Model.Interfaces.*;
-import Model.Entities.DrugEntity;
 import View.*;
 
-import java.util.List;
-
 public class Controller implements ActionListener{
-    View view = new ViewStub();
+    View view = new TextView();
     DrugDAOImpl drugDAO = new DrugDAOImpl();
     DrugstoreDAOImpl drugstoreDAO = new DrugstoreDAOImpl();
 

@@ -1,5 +1,3 @@
-package View;
-
 import Event.ActionListener;
 import Event.*;
 import Event.EventObject;
@@ -8,11 +6,12 @@ import Model.Entities.DrugEntity;
 import Model.Entities.DrugstoreEntity;
 import Prameters.Parameters;
 import Prameters.ParametersBuilder;
+import View.View;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class ViewStub implements View {
+public class ViewStub implements View{
 
     Scanner sc = new Scanner(System.in);
 

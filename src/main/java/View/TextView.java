@@ -74,7 +74,7 @@ public class TextView implements View{
         if(sc.next().equals("1")){
             ParametersBuilder builder = new ParametersBuilder();
             Parameters parameters = builder.createParameters();
-            EventObject eventObject = new EventObjectImpl(parameters, Event.GET_DRUGS);
+            EventObject eventObject = new EventObjectImpl(parameters, Event.GET_ALL_DRUGS);
             actionListener.actionPerfomed(eventObject);
         }
     }
