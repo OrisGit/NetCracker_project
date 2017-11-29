@@ -1,6 +1,6 @@
 package Controller;
 
-import Event.ActionListener;
+import Event.UserRequestSelectListener;
 import Event.EventObject;
 import Model.DAO.DrugDAOImpl;
 import Model.DAO.DrugstoreDAOImpl;
@@ -8,13 +8,13 @@ import Model.Interfaces.DrugDAO;
 import Model.Interfaces.DrugstoreDAO;
 import View.*;
 
-public class Controller implements ActionListener{
+public class Controller implements UserRequestSelectListener {
     View view = new TextView();
     DrugDAO drugDAO = new DrugDAOImpl();
     DrugstoreDAO drugstoreDAO = new DrugstoreDAOImpl();
 
     public void run(){
-        view.setActionListener(this);
+        view.setUserRequestSelectListener(this);
         view.run();
     }
 

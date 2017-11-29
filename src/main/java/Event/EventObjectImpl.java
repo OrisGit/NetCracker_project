@@ -2,12 +2,12 @@ package Event;
 
 import Prameters.Parameters;
 
-public class EventObjectImpl implements EventObject {
-    private Parameters parameters;
+public class EventObjectImpl<T> implements EventObject<T> {
+    private T object;
     private Event event;
 
-    public EventObjectImpl(Parameters parameters, Event event) {
-        this.parameters = parameters;
+    public EventObjectImpl(T object, Event event) {
+        this.object = object;
         this.event = event;
     }
 
@@ -17,7 +17,7 @@ public class EventObjectImpl implements EventObject {
     }
 
     @Override
-    public Parameters getEventSource() {
-        return parameters;
+    public T getEventSource() {
+        return object;
     }
 }

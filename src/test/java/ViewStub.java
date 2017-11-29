@@ -1,4 +1,3 @@
-import Event.ActionListener;
 import Event.*;
 import Event.EventObject;
 import Event.EventObjectImpl;
@@ -15,12 +14,11 @@ public class ViewStub implements View{
 
     Scanner sc = new Scanner(System.in);
 
-    ActionListener actionListener;
+    UserRequestSelectListener userRequestSelectListener;
 
-    @Override
-    public void setActionListener(ActionListener actionListener) {
-        if(actionListener!=null){
-            this.actionListener = actionListener;
+    public void setUserRequestSelectListener(UserRequestSelectListener userRequestSelectListener) {
+        if(userRequestSelectListener !=null){
+            this.userRequestSelectListener = userRequestSelectListener;
         }
     }
 
@@ -46,12 +44,12 @@ public class ViewStub implements View{
             ParametersBuilder builder = new ParametersBuilder();
             Parameters parameters = builder.createParameters();
             EventObject eventObject = new EventObjectImpl(parameters,Event.GET_ALL_DRUGSTORE);
-            actionListener.actionPerfomed(eventObject);
+            userRequestSelectListener.actionPerfomed(eventObject);
         }else{
             ParametersBuilder builder = new ParametersBuilder();
             Parameters parameters = builder.createParameters();
             EventObject eventObject = new EventObjectImpl(parameters,Event.GET_ALL_DRUGS);
-            actionListener.actionPerfomed(eventObject);
+            userRequestSelectListener.actionPerfomed(eventObject);
         }
     }
 }

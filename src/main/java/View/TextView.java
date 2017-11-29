@@ -1,9 +1,6 @@
 package View;
 
-import Event.ActionListener;
-import Event.Event;
-import Event.EventObject;
-import Event.EventObjectImpl;
+import Event.*;
 import Model.Entities.DrugEntity;
 import Model.Entities.DrugstoreEntity;
 
@@ -18,14 +15,14 @@ import java.util.Scanner;
 
 public class TextView implements View{
     private Scanner sc = new Scanner(System.in);
-    private ActionListener actionListener;
+    private UserRequestSelectListener userRequestSelectListener;
 
     public TextView() {
     }
 
-    public void setActionListener(ActionListener actionListener) {
-        if (this.actionListener == null) {
-            this.actionListener = actionListener;
+    public void setUserRequestSelectListener(UserRequestSelectListener userRequestSelectListener) {
+        if (this.userRequestSelectListener == null) {
+            this.userRequestSelectListener = userRequestSelectListener;
         }
     }
 
@@ -74,8 +71,8 @@ public class TextView implements View{
         if(sc.next().equals("1")){
             ParametersBuilder builder = new ParametersBuilder();
             Parameters parameters = builder.createParameters();
-            EventObject eventObject = new EventObjectImpl(parameters, Event.GET_ALL_DRUGS);
-            actionListener.actionPerfomed(eventObject);
+            EventObject eventObject = new EventObjectImpl<Parameters>(parameters, Event.GET_ALL_DRUGS);
+            userRequestSelectListener.actionPerfomed(eventObject);
         }
     }
 

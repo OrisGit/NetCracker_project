@@ -1,6 +1,6 @@
 package View;
 
-import Event.ActionListener;
+import Event.UserRequestSelectListener;
 import Model.Entities.DrugEntity;
 import Model.Entities.DrugstoreEntity;
 
@@ -12,12 +12,12 @@ import java.util.List;
 public interface View {
     /**
      * <p>Подписывает объект-слушатель на события происходящие или вызываемые пользователем внутри представления.</p>
-     * @param actionListener Объект слушатель, реализующий интерфейс {@link ActionListener ActionListener}, в который
+     * @param userRequestSelectListener Объект слушатель, реализующий интерфейс {@link UserRequestSelectListener UserRequestSelectListener}, в который
      *                       передаётся сообщение о произошедшем событии.
      * @see Event.Event
      * @see Event.EventObject
      */
-    void setActionListener(ActionListener actionListener);
+    void setUserRequestSelectListener(UserRequestSelectListener userRequestSelectListener);
 
     /**
      * <p>Передаёт представлению список препаратов для вывода</p>

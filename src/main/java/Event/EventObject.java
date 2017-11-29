@@ -5,10 +5,10 @@ import Prameters.Parameters;
 /**
  * <p>Описывает объект который содержит в себе информацию о событии и передаётся
  * слушателю в момент наступления события.</p>
- * @see ActionListener
+ * @see UserRequestSelectListener
  * @see Event
  */
-public interface EventObject {
+public interface EventObject<T> {
     /**
      * Возвращает тип произошедшего события
      * @return {@link Event Event}
@@ -19,5 +19,5 @@ public interface EventObject {
      * Возвращает ресурсы которые соответствуют произошедшему событию
      * @return параметры запроса;
      */
-    Parameters getEventSource();
+    T getEventSource();
 }
