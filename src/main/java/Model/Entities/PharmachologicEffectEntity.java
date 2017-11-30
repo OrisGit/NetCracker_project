@@ -1,27 +1,34 @@
 package Model.Entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "PHARMACHOLOGIC_EFFECT")
 public class PharmachologicEffectEntity {
-    private Long id;
+    private UUID id;
     private String name;
     private String description;
 
     public PharmachologicEffectEntity() {
     }
 
+    public PharmachologicEffectEntity(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(name = "P_EFFECT_ID", nullable = false, unique = true)
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -68,7 +75,7 @@ public class PharmachologicEffectEntity {
     @Override
     public String toString() {
         return "PharmachologicEffectEntity{" +
-                "id=" + id +
+                "id=" + id.toString() +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 '}';

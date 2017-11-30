@@ -13,6 +13,12 @@ public class PriceEntity {
     public PriceEntity() {
     }
 
+    public PriceEntity(DrugEntity drug, DrugstoreEntity drugstore, Long cost) {
+        this.drug = drug;
+        this.drugstore = drugstore;
+        this.cost = cost;
+    }
+
     @Id
     @ManyToOne
     @JoinColumn(name = "DRUG_ID")

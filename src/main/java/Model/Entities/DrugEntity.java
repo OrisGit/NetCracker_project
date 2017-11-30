@@ -1,16 +1,18 @@
 package Model.Entities;
 
 import com.sun.istack.internal.NotNull;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "DRUGS")
 public class DrugEntity {
 
-    private Long id;
+    private UUID id;
     private String name;
     private String releaseForm;
     private String manufacturer;
@@ -21,14 +23,25 @@ public class DrugEntity {
     public DrugEntity() {
     }
 
+    public DrugEntity(String name, String releaseForm, String manufacturer, String activeIngredient, PharmachologicEffectEntity pharmachologicEffect, TherapeuticEffectEntity therapeuticEffect, String description) {
+        this.name = name;
+        this.releaseForm = releaseForm;
+        this.manufacturer = manufacturer;
+        this.activeIngredient = activeIngredient;
+        this.pharmachologicEffect = pharmachologicEffect;
+        this.therapeuticEffect = therapeuticEffect;
+        this.description = description;
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(name = "DRUG_ID", nullable = false, unique = true)
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

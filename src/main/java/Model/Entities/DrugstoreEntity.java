@@ -3,11 +3,12 @@ package Model.Entities;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "DRUGSTORES")
 public class DrugstoreEntity {
-    private Long id;
+    private UUID id;
     private String name;
     private String district;
     private String street;
@@ -19,14 +20,24 @@ public class DrugstoreEntity {
     public DrugstoreEntity() {
     }
 
+    public DrugstoreEntity(String name, String district, String street, String building, Long phone, String workingHours, Short isRoundTheClock) {
+        this.name = name;
+        this.district = district;
+        this.street = street;
+        this.building = building;
+        this.phone = phone;
+        this.workingHours = workingHours;
+        this.isRoundTheClock = isRoundTheClock;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "DRUGSTORE_ID", nullable = false, unique = true)
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

@@ -1,27 +1,31 @@
 package Model.Entities;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "THERAPEUTIC_EFFECT")
 public class TherapeuticEffectEntity {
-    private Long id;
+    private UUID id;
     private String name;
     private String description;
 
     public TherapeuticEffectEntity() {
     }
 
+    public TherapeuticEffectEntity(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "T_EFFECT_ID", nullable = false, unique = true)
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
