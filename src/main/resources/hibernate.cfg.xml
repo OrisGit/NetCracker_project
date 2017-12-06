@@ -10,10 +10,10 @@
         <property name="connection.password">oris</property>
         <property name="hbm2ddl.auto">validate</property>
 
-        <mapping class="Model.Entities.DrugEntity"/>
-        <mapping class="Model.Entities.DrugstoreEntity"/>
-        <mapping class="Model.Entities.PriceEntity"/>
-        <mapping class="Model.Entities.PharmachologicEffectEntity"/>
-        <mapping class="Model.Entities.TherapeuticEffectEntity"/>
+        <mapping class="model.entities.DrugEntity"/>
+        <mapping class="model.entities.DrugstoreEntity"/>
+        <mapping class="model.entities.PriceEntity"/>
+        <mapping class="model.entities.PharmachologicEffectEntity"/>
+        <mapping class="model.entities.TherapeuticEffectEntity"/>
     </session-factory>
 </hibernate-configuration>

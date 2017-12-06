@@ -1,11 +1,11 @@
-import Event.*;
-import Event.EventObject;
-import Event.EventObjectImpl;
-import Model.Entities.DrugEntity;
-import Model.Entities.DrugstoreEntity;
-import Prameters.Parameters;
-import Prameters.ParametersBuilder;
-import View.View;
+import event.*;
+import event.EventObject;
+import event.EventObjectImpl;
+import model.entities.DrugEntity;
+import model.entities.DrugstoreEntity;
+import parameters.Parameters;
+import parameters.ParametersBuilder;
+import view.View;
 
 import java.util.List;
 import java.util.Scanner;
