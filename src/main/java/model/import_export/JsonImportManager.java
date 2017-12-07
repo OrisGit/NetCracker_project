@@ -3,28 +3,19 @@ package model.import_export;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import model.dao.DAO;
-import model.dao.DAOException;
-import model.import_export.interfaces.ImportManager;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
-public class JsonImportManager<T> implements ImportManager {
+public class JsonImportManager<T> extends ImportManager<T> {
 
     private Gson gson;
-    private DAO dao;
-    private Class<Object> clazz;
-    private final static Logger logger = Logger.getLogger("JsonImportManager");
 
-    public JsonImportManager(DAO dao, Class<Object> clazz) {
-        this.dao = dao;
-        this.clazz = clazz;
+    public JsonImportManager(DAO dao, Class<?> clazz) {
+        super(dao,clazz);
         gson = new Gson();
     }
 
@@ -74,20 +65,6 @@ public class JsonImportManager<T> implements ImportManager {
             importEntities(objects);
         }catch (JsonSyntaxException e){
             logger.warning("Информация в файле не соответствует формату JSON: "+e.getMessage());
-        }
-    }
-
-    private void importEntities(List<T> entities){
-        for(Object entity : entities){
-            importEntity(entity);
-        }
-    }
-
-    private void importEntity(Object entity){
-        try {
-            dao.replicate(entity);
-        } catch (DAOException e) {
-            logger.warning("Ошибка во время импорта массива объектов: "+e.getMessage());
         }
     }
 }

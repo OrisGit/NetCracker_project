@@ -1,12 +1,11 @@
 package model.import_export;
 
 import com.google.gson.Gson;
-import model.import_export.interfaces.ExportManager;
 
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class JsonExportManager implements ExportManager{
+public class JsonExportManager extends ExportManager{
 
     private Gson gson;
 

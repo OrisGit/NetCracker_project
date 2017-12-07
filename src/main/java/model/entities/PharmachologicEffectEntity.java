@@ -3,10 +3,12 @@ package model.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.UUID;
 
 @Entity
 @Table(name = "PHARMACHOLOGIC_EFFECT")
+@XmlRootElement
 public class PharmachologicEffectEntity {
     private UUID id;
     private String name;

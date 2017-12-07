@@ -1,10 +1,12 @@
 package model.entities;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "DRUGS_STORES")
 @IdClass(PriceEntityPK.class)
+@XmlRootElement
 public class PriceEntity {
     private DrugEntity drug;
     private DrugstoreEntity drugstore;
