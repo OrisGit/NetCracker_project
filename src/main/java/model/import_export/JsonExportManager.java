@@ -12,7 +12,7 @@ import java.util.List;
 Класс предоставляет методы для экспорта базы данных в строку или файл в формате JSON.
  @see ExportManager
  */
-public class JsonExportManager{
+public class JsonExportManager extends ExportManager{
 
     /**
      * Экземпляр маршализатора.
@@ -37,6 +37,7 @@ public class JsonExportManager{
      * @param path путь к файлу.
      * @throws IOException возникает в случае ошибки доступа к файлу или записи в файл.
      */
+    @Override
     public void exportToFile(String path, Object ... entities) throws IOException {
         if(entities.length!=0){
             FileWriter fileWriter = new FileWriter(path);
@@ -55,6 +56,7 @@ public class JsonExportManager{
      * @param entities список сущностей для экспорта.
      * @return возвращает строку в формате JSON или null если список пуст.
      */
+    @Override
     public String exportToString(Object ... entities){
         if(entities.length!=0)
             return gson.toJson(entities);
