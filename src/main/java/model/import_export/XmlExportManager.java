@@ -11,8 +11,8 @@ import java.io.StringWriter;
 import java.util.List;
 
 /**
- Класс предоставляет методы для экспорта списка сущностей в строку или файл в формате XML.
- @see ExportManager
+ * Класс-менеджер предоставляющий методы для экспорта сущностей в файл или строку в формате XML.
+ * @param <T> тип экспортируемой сущности
  */
 public class XmlExportManager<T> extends ExportManager<T>{
 
@@ -53,8 +53,8 @@ public class XmlExportManager<T> extends ExportManager<T>{
             try {
                 getMarshaller().marshal(getJAXBElement(entities),file);
             } catch (JAXBException e) {
-                logger.warning("Ошибка экспорта в XML файл: "+e.getMessage());
-                throw new ExportException("Ошибка экспорта в XML файл: path = "+path,e);
+                logger.warning("Не возможно выполнить экспорт в XML файл из-за ошибки маршализатора: "+e);
+                throw new ExportException("Не возможно выполнить экспорт в XML файл из-за ошибки маршализатора",e);
             }
         }
     }
@@ -73,8 +73,8 @@ public class XmlExportManager<T> extends ExportManager<T>{
                 getMarshaller().marshal(getJAXBElement(entities),sw);
                 return sw.toString();
             } catch (JAXBException e) {
-                logger.warning("Ошибка экспорта в XML строку: "+e.toString());
-                throw new ExportException("Ошибка экспорта в XML строку: ",e);
+                logger.warning("Не возможно выполнить экспорт в XML строку из-за ошибки маршализатора: "+e);
+                throw new ExportException("Не возможно выполнить экспорт в XML строку из-за ошибки маршализатора.",e);
             }
         }
         return null;
@@ -108,8 +108,8 @@ public class XmlExportManager<T> extends ExportManager<T>{
                 marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
                 return this.marshaller = marshaller;
             } catch (JAXBException e) {
-                logger.warning("Ошибка во время создания маршализатора: "+e.getMessage());
-                throw new ExportException("Ошибка во время создания маршализатора: ", e);
+                logger.warning("Не возможно выполнить экспорт в XML из-за ошибки создания маршализатора: "+e.getMessage());
+                throw new ExportException("Не возможно выполнить экспорт в XML из-за ошибки создания маршализатора.", e);
             }
         }
         return marshaller;

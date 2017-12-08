@@ -7,64 +7,76 @@ import model.dao.DAO;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Класс-менеджер предоставляющий методы для импорта сущностей из файла или строки в формате JSON.
+ * @param <T> тип импортируемой сущности
+ */
 public class JsonImportManager<T> extends ImportManager<T> {
 
+    /**
+     * Экземпляр демаршализатора.
+     */
     private Gson gson;
+    /**
+     * Класс массива сущностей.
+     */
+    private Class<T[]> type;
 
-    public JsonImportManager(DAO dao, Class<?> clazz) {
-        super(dao,clazz);
+    /**
+     * Конструктор принимаюший DAO менеджер определённой сущности и класс массива сущностей.
+     * @param dao DAO менеджер сушности.
+     * @param type класс массива сущностей.
+     */
+    public JsonImportManager(DAO<T> dao, Class<T[]> type) {
+        super(dao);
         gson = new Gson();
+        this.type = type;
     }
 
+    /**
+     * Импортирует список сущностей из файла в формате JSON.
+     * @param path путь к файлу.
+     * @throws ImportException ошибка импорта.
+     */
     @Override
-    public void importEntityFromFile(String path){
+    public void importFromFile(String path) throws ImportException {
         try{
-            Object obj = gson.fromJson(new FileReader(path),clazz);
-            importEntity(obj);
+            T[] array = gson.fromJson(new FileReader(path),type);
+            if(array!=null){
+                List<T> objects = Arrays.asList(array);
+                importEntities(objects);
+            }
         }catch (JsonSyntaxException e){
-            logger.warning("Информация в файле не соответствует формату JSON: "+e.getMessage());
+            logger.warning("Не возможно выполнить импорт из JSON файла т.к. информация в файле не соответствует формату JSON: "+e);
+            throw new ImportException("Не возможно выполнить импорт из JSON файла т.к. информация в файле не соответствует формату JSON.",e);
         }catch (JsonIOException e){
-            logger.warning("Ошибка ввода вывода: "+e.getMessage());
+            logger.warning("Не возможно выполнить импорт из JSON файла из-за ошибки ввода-вывода: "+e);
+            throw new ImportException("Не возможно выполнить импорт из JSON файла из-за ошибки ввода-вывода.",e);
         } catch (FileNotFoundException e) {
-            logger.warning(String.format("Файл по пути: %s не найден", path));
-        }
-
-    }
-
-    @Override
-    public void importEntityFromString(String jsonString){
-        try{
-            Object obj = gson.fromJson(jsonString,clazz);
-            importEntity(obj);
-        }catch (JsonSyntaxException e){
-            logger.warning("Информация в файле не соответствует формату JSON: "+e.getMessage());
+            logger.warning(String.format("Не возможно выполнить импорт из JSON файла т.к. файл по пути: %s не найден: ", path)+e);
+            throw new ImportException(String.format("Не возможно выполнить импорт из JSON файла т.к. файл по пути: %s не найден", path),e);
         }
     }
 
+    /**
+     * Импортирует список сущностей из строки в формате JSON.
+     * @param jsonString строка в формате JSON.
+     * @throws ImportException ошибка импорта.
+     */
     @Override
-    public void importListFromFile(String path, Type type){
+    public void importFromString(String jsonString) throws ImportException {
         try{
-            List<T> objects = gson.fromJson(new FileReader(path), type);
-            importEntities(objects);
+            T[] array = gson.fromJson(jsonString, type);
+            if(array!=null){
+                List<T> objects = Arrays.asList(array);
+                importEntities(objects);
+            }
         }catch (JsonSyntaxException e){
-            logger.warning("Информация в файле не соответствует формату JSON: "+e.getMessage());
-        }catch (JsonIOException e){
-            logger.warning("Ошибка ввода вывода: "+e.getMessage());
-        } catch (FileNotFoundException e) {
-            logger.warning(String.format("Файл по пути: %s не найден", path));
-        }
-    }
-
-    @Override
-    public void importListFromString(String jsonString, Type type){
-        try{
-            List<T> objects = gson.fromJson(jsonString, type);
-            importEntities(objects);
-        }catch (JsonSyntaxException e){
-            logger.warning("Информация в файле не соответствует формату JSON: "+e.getMessage());
+            logger.warning("Не возможно выполнить импорт из JSON строки т.к. информация в файле не соответствует формату JSON: "+e);
+            throw new ImportException("Не возможно выполнить импорт из JSON строки т.к. информация в файле не соответствует формату JSON.",e);
         }
     }
 }

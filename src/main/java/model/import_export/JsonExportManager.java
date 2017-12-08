@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
-Класс предоставляет методы для экспорта списка сущностей в строку или файл в формате JSON.
- @see ExportManager
+ * Класс-менеджер предоставляющий методы для экспорта сущностей в файл или строку в формате JSON.
+ * @param <T> тип экспортируемой сущности
  */
 public class JsonExportManager<T> extends ExportManager<T>{
 
@@ -44,9 +44,9 @@ public class JsonExportManager<T> extends ExportManager<T>{
                 gson.toJson(entities, fileWriter);
                 fileWriter.flush();
                 fileWriter.close();
-            }catch (Exception e){
-                logger.warning("Ошибка записи JSON в файл: "+e.getMessage());
-                throw new ExportException("Ошибка записи JSON в файл: path = "+path,e);
+            } catch (IOException e) {
+                logger.warning("Не возможно выполнить экспорт в JSON файл из-за ошибки ввода-вывода: "+e);
+                throw new ExportException("Не возможно выполнить экспорт в JSON файл из-за ошибки ввода-вывода.",e);
             }
         }
     }

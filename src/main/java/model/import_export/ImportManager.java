@@ -11,33 +11,23 @@ import java.util.logging.Logger;
 public abstract class ImportManager<T> {
 
     protected final static Logger logger = Logger.getLogger("ImportManager");
-    protected DAO dao;
-    protected Class<?> clazz;
+    protected DAO<T> dao;
 
-    public ImportManager(DAO dao, Class<?> clazz) {
+    public ImportManager(DAO<T> dao) {
         this.dao = dao;
-        this.clazz = clazz;
     }
 
-    public abstract void importEntityFromFile(String path) throws FileNotFoundException;
+    public abstract void importFromFile(String path) throws ImportException;
 
-    public abstract void importEntityFromString(String jsonString);
+    public abstract void importFromString(String str) throws ImportException;
 
-    public abstract void importListFromFile(String path, Type type);
-
-    public abstract void importListFromString(String jsonString, Type type);
-
-    protected void importEntities(Object ... entities){
-        for(Object entity : entities){
-            importEntity(entity);
-        }
-    }
-
-    protected void importEntity(Object entity){
-        try {
-            dao.replicate(entity);
-        } catch (DAOException e) {
-            logger.warning("Ошибка во время импорта массива объектов: "+e.getMessage());
+    protected void importEntities(List<T> entities){
+        for(T entity : entities){
+            try {
+                dao.replicate(entity);
+            } catch (DAOException e) {
+                logger.warning("Не возможно выполнить импорт сущности т.к. возникла ошибка при добавлении сушности в базу данных: "+e);
+            }
         }
     }
 }
