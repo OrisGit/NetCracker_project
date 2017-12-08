@@ -12,7 +12,7 @@ import java.util.List;
 Класс предоставляет методы для экспорта базы данных в строку или файл в формате JSON.
  @see ExportManager
  */
-public class JsonExportManager extends ExportManager{
+public class JsonExportManager{
 
     /**
      * Экземпляр маршализатора.
@@ -33,16 +33,15 @@ public class JsonExportManager extends ExportManager{
 
     /**
      * Экспортирует список сущностей в файл в формате JSON. Если список пуст то файл не создаётся.
-     * @param object список сущностей для экспорта.
+     * @param entities список сущностей для экспорта.
      * @param path путь к файлу.
      * @throws IOException возникает в случае ошибки доступа к файлу или записи в файл.
      */
-    @Override
-    public void exportToFile(Object object, String path) throws IOException {
-        if(!(object instanceof List) || ((List) object).size() != 0){
+    public void exportToFile(String path, Object ... entities) throws IOException {
+        if(entities.length!=0){
             FileWriter fileWriter = new FileWriter(path);
             try {
-                gson.toJson(object, fileWriter);
+                gson.toJson(entities, fileWriter);
             }catch (JsonIOException e){
                 throw new IOException(e);
             }
@@ -53,13 +52,12 @@ public class JsonExportManager extends ExportManager{
 
     /**
      * Экспортирует список сущностей в строку в формате JSON. Если список пуст то возвращает null;
-     * @param object список сущностей для экспорта.
+     * @param entities список сущностей для экспорта.
      * @return возвращает строку в формате JSON или null если список пуст.
      */
-    @Override
-    public String exportToString(Object object){
-        if(!(object instanceof List) || ((List) object).size() != 0)
-            return gson.toJson(object);
+    public String exportToString(Object ... entities){
+        if(entities.length!=0)
+            return gson.toJson(entities);
         return null;
     }
 }
