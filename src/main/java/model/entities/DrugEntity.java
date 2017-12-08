@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import java.util.UUID;
 
 @Entity
@@ -87,6 +88,7 @@ public class DrugEntity {
 
     @ManyToOne
     @JoinColumn(name = "P_EFFECT_ID")
+
     public PharmachologicEffectEntity getPharmachologicEffect() {
         return pharmachologicEffect;
     }

@@ -1,8 +1,10 @@
 import com.google.gson.reflect.TypeToken;
 import model.dao.*;
+import model.entities.DrugEntity;
 import model.entities.PharmachologicEffectEntity;
 import model.entities.PriceEntity;
 import model.import_export.*;
+import model.interfaces.DrugDAO;
 import model.interfaces.PEffectDAO;
 import model.interfaces.PriceDAO;
 import java.io.IOException;
@@ -10,8 +12,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 public class ImportExportTest {
-    public static void main(String[] args) throws DAOException, IOException {
-        JsonExport();
+    public static void main(String[] args) throws DAOException, ExportException {
+        XmlExport();
     }
 
     public static void XmlImport(){
@@ -38,11 +40,11 @@ public class ImportExportTest {
         im.importListFromString(path, type);
     }
 
-    public static void XmlExport() throws DAOException {
-        ExportManager em = new XmlExportManager(PharmachologicEffectEntity.class);
-        PEffectDAO pEffectDAO = new PEffectDAOImpl();
-        List<PharmachologicEffectEntity> therapeuticEffectEntities = pEffectDAO.getAll();
-        System.out.println(em.exportToString(therapeuticEffectEntities));
+    public static void XmlExport() throws DAOException, ExportException {
+        ExportManager<DrugEntity> em = new XmlExportManager<>(DrugEntity.class, true);
+        DrugDAO drugDAO = new DrugDAOImpl();
+        List<DrugEntity> therapeuticEffectEntities = drugDAO.getAll();
+        em.exportToFile("E:/Temp/exit.xml",therapeuticEffectEntities);
     }
 
     public static void JsonImport(){
@@ -52,11 +54,11 @@ public class ImportExportTest {
         im.importListFromString(impStr, type);
     }
 
-    public static void JsonExport() throws DAOException, IOException {
-        JsonExportManager em = new JsonExportManager(true);
+    public static void JsonExport() throws ExportException, DAOException {
+        JsonExportManager<PriceEntity> em = new JsonExportManager<>(true);
         PriceDAO priceDAO = new PriceDAOImpl();
         List<PriceEntity> priceEntities = priceDAO.getAll();
-        em.exportToFile("E:/Temp/exit.json", priceEntities.toArray());
-        System.out.println(em.exportToString(priceEntities.toArray()));
+        em.exportToFile("E:/Temp/exit.json", priceEntities);
+        System.out.println(em.exportToString(priceEntities));
     }
 }

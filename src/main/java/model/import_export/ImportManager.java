@@ -27,7 +27,7 @@ public abstract class ImportManager<T> {
 
     public abstract void importListFromString(String jsonString, Type type);
 
-    protected void importEntities(List<T> entities){
+    protected void importEntities(Object ... entities){
         for(Object entity : entities){
             importEntity(entity);
         }

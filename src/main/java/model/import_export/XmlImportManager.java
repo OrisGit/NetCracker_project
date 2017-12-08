@@ -4,15 +4,11 @@ import model.dao.DAO;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.StringReader;
 import java.lang.reflect.Type;
-import java.util.List;
 
 public class XmlImportManager<T> extends ImportManager<T> {
 
@@ -52,8 +48,8 @@ public class XmlImportManager<T> extends ImportManager<T> {
         try {
             JAXBContext context = JAXBContext.newInstance(clazz);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            Entities entities = (Entities)unmarshaller.unmarshal(file);
-            importEntity(entities.getEntities());
+            Wrapper wrapper = (Wrapper)unmarshaller.unmarshal(file);
+            importEntity(wrapper.getEntities());
         } catch (JAXBException e) {
             logger.warning("Ошибка при импорте из xml файла: "+e.toString());
         }
@@ -63,10 +59,10 @@ public class XmlImportManager<T> extends ImportManager<T> {
     public void importListFromString(String xmlString, Type type) {
         StringReader sr = new StringReader(xmlString);
         try {
-            JAXBContext context = JAXBContext.newInstance(Entities.class,clazz);
+            JAXBContext context = JAXBContext.newInstance(Wrapper.class,clazz);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            Entities entities = (Entities)unmarshaller.unmarshal(sr);
-            importEntities((List<T>)entities.getEntities());
+            Wrapper wrapper = (Wrapper)unmarshaller.unmarshal(sr);
+            importEntities(wrapper.getEntities());
         } catch (JAXBException e) {
             logger.warning("Ошибка при импорте из xml файла: "+e.getMessage());
         }
