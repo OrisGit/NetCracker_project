@@ -5,10 +5,23 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.AnchorPane;
+import model.dao.DAOException;
+import model.dao.TEffectDAOImpl;
+import model.entities.TherapeuticEffectEntity;
+import model.import_export.*;
 
+import model.interfaces.TEffectDAO;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class PharmacyCatalogueController {
+    @FXML
+    public Button exportxmlBtn;
+    @FXML
+    public Button exportjsonBtn;
     @FXML
     private ToggleButton selector;
     @FXML
@@ -156,6 +169,48 @@ public class PharmacyCatalogueController {
 
         data.clear();
         data.addAll(drugstoreList);
+    }
+
+    public void exportToJSON(){
+        ExportManager<TherapeuticEffectEntity> exportManager = new JsonExportManager<>(true);
+        TEffectDAO daoManager = new TEffectDAOImpl();
+        //TODO проверить файл
+        File file = new File("E:/export.json");
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            exportManager.exportToFile("E:/export.json",daoManager.getAll());
+        } catch (ExportException e) {
+            e.printStackTrace();
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void exportToXML(){
+        ExportManager<TherapeuticEffectEntity> exportManager = new XmlExportManager<>(TherapeuticEffectEntity.class,true);
+        TEffectDAO daoManager = new TEffectDAOImpl();
+        //TODO проверить файл
+        File file = new File("E:/export.xml");
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            exportManager.exportToFile("E:/export.xml",daoManager.getAll());
+        } catch (ExportException e) {
+            e.printStackTrace();
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void displayDrugstore() {
