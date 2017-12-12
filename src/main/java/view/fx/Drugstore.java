@@ -1,11 +1,11 @@
-package Client;
+package view.fx;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class DrugstoreFX {
+public class Drugstore {
     private final StringProperty name;
     private final StringProperty district;
     private final StringProperty address;
@@ -13,8 +13,8 @@ public class DrugstoreFX {
     private final StringProperty workingHours;
     private final BooleanProperty isRoundTheClock;
 
-    public DrugstoreFX(String name, String district, String street, String building, String phone,
-                       String workingHours, Boolean isRoundTheClock) {
+    public Drugstore(String name, String district, String street, String building, String phone,
+                     String workingHours, Boolean isRoundTheClock) {
         this.name = new SimpleStringProperty(name);
         this.district = new SimpleStringProperty(district);
         this.address = new SimpleStringProperty(street + ", " + building);

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.PharmacyCatalogueController">
+<AnchorPane prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.fx.ViewFX">
     <HBox layoutX="14.0" layoutY="30.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <VBox prefWidth="200.0" HBox.hgrow="NEVER">
             <ToolBar prefHeight="25.0" prefWidth="200.0">
@@ -33,19 +33,34 @@
                     <Insets left="5.0" right="5.0" top="5.0" />
                 </VBox.margin>
             </TextField>
-            <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#displayDrug" prefHeight="25.0" prefWidth="190.0" text="Поиск">
+            <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#showDrugs" prefHeight="25.0" prefWidth="190.0" text="Поиск">
                 <VBox.margin>
                     <Insets left="5.0" right="5.0" top="5.0" />
                 </VBox.margin>
             </Button>
-            <Button fx:id="showAllBtn" mnemonicParsing="false" onAction="#displayAllDrugs" prefHeight="25.0" prefWidth="190.0" text="Показать все">
+            <Button fx:id="showAllBtn" mnemonicParsing="false" onAction="#showAllDrugs" prefHeight="25.0" prefWidth="190.0" text="Показать все">
                 <VBox.margin>
                     <Insets left="5.0" right="5.0" top="5.0" />
                 </VBox.margin>
             </Button>
+         <Button fx:id="addBtn" mnemonicParsing="false" onAction="#addDrug" prefHeight="25.0" prefWidth="190.0" text="Добавить...">
+            <VBox.margin>
+               <Insets left="5.0" right="5.0" top="135.0" />
+            </VBox.margin>
+         </Button>
+         <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#addDrug" prefHeight="25.0" prefWidth="190.0" text="Удалить...">
+            <VBox.margin>
+               <Insets left="5.0" right="5.0" top="5.0" />
+            </VBox.margin>
+         </Button>
+         <Button fx:id="updateBtn" mnemonicParsing="false" onAction="#addDrug" prefHeight="25.0" prefWidth="190.0" text="Изменить...">
+            <VBox.margin>
+               <Insets left="5.0" right="5.0" top="5.0" />
+            </VBox.margin>
+         </Button>
         </VBox>
-        <AnchorPane fx:id="tableContainer" prefWidth="600.0">
-            <TableView AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+        <AnchorPane prefWidth="600.0">
+            <TableView fx:id="table" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
         </AnchorPane>
     </HBox>
 </AnchorPane>
