@@ -14,9 +14,18 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.stage.Stage;
 import model.entities.DrugEntity;
 import model.entities.DrugstoreEntity;
+import model.entities.TherapeuticEffectEntity;
+import model.import_export.ExportManager;
+import model.import_export.JsonExportManager;
 import parameters.ParametersBuilder;
 import view.View;
+import model.dao.DAOException;
+import model.dao.TEffectDAOImpl;
+import model.import_export.*;
 
+import model.interfaces.TEffectDAO;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,13 +40,16 @@ public class ViewFX implements View {
     @FXML private TextField param;
     @FXML private Button searchBtn;
     @FXML private Button showAllBtn;
+    @FXML private Button XMLExportBtn;
+    @FXML private Button JSONExportBtn;
     @FXML private Button addBtn;
     @FXML private Button deleteBtn;
     @FXML private Button updateBtn;
     @FXML private TableView table;
 
+
     @Override
-    public void setSelectListener(UserRequestSelectListener selectListener) {
+    public void setUserRequestSelectListener(UserRequestSelectListener userRequestSelectListener) {
         this.selectListener = selectListener;
     }
 
@@ -216,6 +228,50 @@ public class ViewFX implements View {
     public void showAllPharmacies() {
         EventObjectImpl eo = new EventObjectImpl(null, Event.GET_ALL_DRUGSTORE);
         selectListener.actionPerfomed(eo);
+    }
+
+    @FXML
+    public void exportToJSON(){
+        ExportManager<TherapeuticEffectEntity> exportManager = new JsonExportManager<>(true);
+        TEffectDAO daoManager = new TEffectDAOImpl();
+        //TODO проверить файл
+        File file = new File("E:/export.json");
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            exportManager.exportToFile("E:/export.json",daoManager.getAll());
+        } catch (ExportException e) {
+            e.printStackTrace();
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void exportToXML(){
+        ExportManager<TherapeuticEffectEntity> exportManager = new XmlExportManager<>(TherapeuticEffectEntity.class,true);
+        TEffectDAO daoManager = new TEffectDAOImpl();
+        //TODO проверить файл
+        File file = new File("E:/export.xml");
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            exportManager.exportToFile("E:/export.xml",daoManager.getAll());
+        } catch (ExportException e) {
+            e.printStackTrace();
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addDrug() {
