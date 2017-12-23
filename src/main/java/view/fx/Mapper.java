@@ -25,8 +25,8 @@ public class Mapper {
     public static LinkedList fromAll(List entities) {
         LinkedList list = new LinkedList<>();
         for (Object entity : entities) {
-            if (entity instanceof Drugstore) list.add(Mapper.from((DrugstoreEntity) entity));
-            if (entity instanceof Drug) list.add(Mapper.from((DrugEntity) entity));
+            if (entity instanceof DrugstoreEntity) list.add(Mapper.from((DrugstoreEntity) entity));
+            if (entity instanceof DrugEntity) list.add(Mapper.from((DrugEntity) entity));
         }
         return list;
     }

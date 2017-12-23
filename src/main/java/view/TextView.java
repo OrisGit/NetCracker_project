@@ -44,7 +44,7 @@ public class TextView implements View{
         System.out.println(at.render());
     }
 
-    public void displayPharmacies(List<DrugstoreEntity> drugstores) {
+    public void displayDrugstores(List<DrugstoreEntity> drugstores) {
         AsciiTable at = new AsciiTable();
         at.addRule();
         at.addRow("#", "Название", "Район", "Адрес", "Телефон", "График работы", "Круглосуточная").

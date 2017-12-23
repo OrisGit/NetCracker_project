@@ -28,7 +28,7 @@ public class ViewStub implements View{
     }
 
     @Override
-    public void displayPharmacies(List<DrugstoreEntity> drugstores) {
+    public void displayDrugstores(List<DrugstoreEntity> drugstores) {
         drugstores.forEach(System.out::println);
     }
 

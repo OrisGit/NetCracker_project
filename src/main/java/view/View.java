@@ -31,7 +31,7 @@ public interface View {
      * @param drugstores - список аптек
      * @see DrugstoreEntity
      */
-    void displayPharmacies(List<DrugstoreEntity> drugstores);
+    void displayDrugstores(List<DrugstoreEntity> drugstores);
 
     /**
      * <p>Передаёт представлению сообщение об ошибке для вывода</p>
