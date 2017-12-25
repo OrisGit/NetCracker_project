@@ -11,10 +11,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.DrugEntity;
 import model.entities.DrugstoreEntity;
+import model.entities.PharmachologicEffectEntity;
 import model.entities.TherapeuticEffectEntity;
 import model.import_export.ExportManager;
 import model.import_export.JsonExportManager;
@@ -30,18 +32,19 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ViewFX implements View, Initializable {
 
 
     @FXML
-    private TableView table_drugs;
+    private TableView tableDrugs;
     @FXML
-    private TableView table_drugstores;
+    private TableView tableDrugstores;
     private UserRequestSelectListener selectListener;
-    private List<DrugEntity> drugsTable;
-    private List<DrugstoreEntity> drugstoresTable;
+    private List<DrugEntity> drugs;
+    private List<DrugstoreEntity> drugstores;
     private static Stage stage;
 
     public static void setStage(Stage stage) {
@@ -55,9 +58,8 @@ public class ViewFX implements View, Initializable {
 
     @Override
     public void displayDrugs(List<DrugEntity> drugs) {
-        drugsTable = drugs;
-        TableView<Drug> drugTable = (TableView<Drug>) table_drugs;
-        ObservableList<Drug> data = drugTable.getItems();
+        this.drugs = drugs;
+        ObservableList<Drug> data = tableDrugs.getItems();
         data.clear();
 
         LinkedList<Drug> drugList = Mapper.fromAll(drugs);
@@ -67,9 +69,8 @@ public class ViewFX implements View, Initializable {
 
     @Override
     public void displayDrugstores(List<DrugstoreEntity> drugstores) {
-        drugstoresTable = drugstores;
-        TableView<Drugstore> drugstoresTable = (TableView<Drugstore>) table_drugstores;
-        ObservableList<Drugstore> data = drugstoresTable.getItems();
+        this.drugstores = drugstores;
+        ObservableList<Drugstore> data = tableDrugstores.getItems();
         data.clear();
 
         LinkedList<Drugstore> drugstoreList = Mapper.fromAll(drugstores);
@@ -149,25 +150,169 @@ public class ViewFX implements View, Initializable {
         }
     }
 
+    @FXML
     public void deleteDrug(){
-        int index = table_drugs.getSelectionModel().getSelectedIndex();
+        int index = tableDrugs.getSelectionModel().getSelectedIndex();
         if(index!=-1){
-            EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(drugsTable.get(index), Event.DELETE_DRUG);
+            EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(drugs.get(index), Event.DELETE_DRUG);
             selectListener.actionPerfomed(eo);
         }
     }
 
+    @FXML
     public void deleteDrugstore(){
-        int index = table_drugstores.getSelectionModel().getSelectedIndex();
+        int index = tableDrugstores.getSelectionModel().getSelectedIndex();
         if(index!=-1){
-            EventObjectImpl<DrugstoreEntity> eo = new EventObjectImpl<>(drugstoresTable.get(index), Event.DELTE_DRUGSTORE);
+            EventObjectImpl<DrugstoreEntity> eo = new EventObjectImpl<>(drugstores.get(index), Event.DELETE_DRUGSTORE);
             selectListener.actionPerfomed(eo);
         }
     }
 
+    @FXML
     public void addDrug() {
+        Dialog<DrugEntity> dialog = new Dialog<>();
+        dialog.setTitle("Новый препарат");
+        dialog.setHeaderText(null);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        TextField name = new TextField();
+        TextField releaseForm = new TextField();
+        TextField manufacturer = new TextField();
+        TextField activeIngredient = new TextField();
+        ComboBox<PharmachologicEffectEntity> pEffectSelector = new ComboBox<>();
+        //<editor-fold>
+        /*
+        ObservableList<PharmachologicEffectEntity> list = FXCollections.observableArrayList();
+        //list.add(new PharmachologicEffectEntity());
+        //...
+        pEffectSelector.setCellFactory(
+        new Callback<ListView<PharmachologicEffectEntity>, ListCell<PharmachologicEffectEntity>>(){
+
+            @Override
+            public ListCell<PharmachologicEffectEntity> call(ListView<PharmachologicEffectEntity> param) {
+
+                return new ListCell<PharmachologicEffectEntity>(){
+
+                    @Override
+                    public void updateItem(PharmachologicEffectEntity item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if(item != null) {
+                            setText(item.getName());
+                        } else {
+                            setText(null);
+                        }
+                    }
+
+                };
+            }
+        });
+        pEffectSelector.getItems().addAll(list);
+        */
+        //</editor-fold>
+        ComboBox<TherapeuticEffectEntity> tEffectSelector = new ComboBox<>();
+        //
+        TextArea description = new TextArea();
+
+        grid.add(new Label("Название:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.add(new Label("Форма выпуска:"), 0, 1);
+        grid.add(releaseForm, 1, 1);
+        grid.add(new Label("Производитель:"), 0, 2);
+        grid.add(manufacturer, 1, 2);
+        grid.add(new Label("Активный ингредиент:"), 0, 3);
+        grid.add(activeIngredient, 1, 3);
+        grid.add(new Label("Фармакологический эффект:"), 0, 4);
+        grid.add(pEffectSelector, 1, 4);
+        grid.add(new Label("Терапевтический эффект:"), 0, 5);
+        grid.add(tEffectSelector, 1, 5);
+        grid.add(new Label("Описание:"), 0, 6);
+        grid.add(description, 1, 6);
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                if (!name.getText().isEmpty() && !releaseForm.getText().isEmpty() && !manufacturer.getText().isEmpty()
+                        && !activeIngredient.getText().isEmpty() && !pEffectSelector.getSelectionModel().isEmpty()
+                        && !tEffectSelector.getSelectionModel().isEmpty()) {
+                    return new DrugEntity(name.getText(), releaseForm.getText(), manufacturer.getText(),
+                            activeIngredient.getText(), pEffectSelector.getValue(), tEffectSelector.getValue(),
+                            description.getText());
+                }
+            }
+            return null;
+        });
+
+        Optional<DrugEntity> result = dialog.showAndWait();
+
+        result.ifPresent(drugEntity -> {
+            EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_DRUG);
+            selectListener.actionPerfomed(eo);
+        });
     }
 
+    @FXML
+    public void addDrugstore() {
+        Dialog<DrugstoreEntity> dialog = new Dialog<>();
+        dialog.setTitle("Новая аптека");
+        dialog.setHeaderText(null);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        TextField name = new TextField();
+        TextField district = new TextField();
+        TextField street = new TextField();
+        TextField building = new TextField();
+        TextField phone = new TextField();
+        TextField hours = new TextField();
+        CheckBox isRoundTheClock = new CheckBox();
+
+        grid.add(new Label("Название:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.add(new Label("Район:"), 0, 1);
+        grid.add(district, 1, 1);
+        grid.add(new Label("Улица:"), 0, 2);
+        grid.add(street, 1, 2);
+        grid.add(new Label("Дом:"), 0, 3);
+        grid.add(building, 1, 3);
+        grid.add(new Label("Телефон:"), 0, 4);
+        grid.add(phone, 1, 4);
+        grid.add(new Label("Часы работы:"), 0, 5);
+        grid.add(hours, 1, 5);
+        grid.add(new Label("Крулосуточная:"), 0, 6);
+        grid.add(isRoundTheClock, 1, 6);
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                if (!name.getText().isEmpty() && !district.getText().isEmpty() && !street.getText().isEmpty()
+                        && !building.getText().isEmpty() && !phone.getText().isEmpty() && !hours.getText().isEmpty()) {
+                    return new DrugstoreEntity(name.getText(), district.getText(), street.getText(), building.getText(),
+                            Long.valueOf(phone.getText()), hours.getText(),
+                            (short)(isRoundTheClock.isSelected() ? 1 : 0));
+                }
+            }
+            return null;
+        });
+
+        Optional<DrugstoreEntity> result = dialog.showAndWait();
+
+        result.ifPresent(drugstoreEntity -> {
+            EventObjectImpl<DrugstoreEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_DRUGSTORE);
+            selectListener.actionPerfomed(eo);
+        });
+    }
+
+    @FXML
     public void showExportWindow(){
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/export_window.fxml"));
@@ -178,6 +323,7 @@ public class ViewFX implements View, Initializable {
             exportWindow.setScene(new Scene(root));
             exportWindow.initModality(Modality.WINDOW_MODAL);
             exportWindow.initOwner(stage);
+            exportWindow.setTitle("Экспорт");
             exportWindow.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -191,7 +337,7 @@ public class ViewFX implements View, Initializable {
     }
 
     private void initializeDrugTable(){
-        table_drugs.getColumns().clear();
+        tableDrugs.getColumns().clear();
         TableColumn<Drug, String> nameCol = new TableColumn<>("Название");
         nameCol.setCellValueFactory(
                 cellData -> cellData.getValue().nameProperty());
@@ -220,12 +366,12 @@ public class ViewFX implements View, Initializable {
         descCol.setCellValueFactory(
                 cellData -> cellData.getValue().descriptionProperty());
 
-        table_drugs.getColumns().addAll(nameCol, formCol, manufacturerCol, ingredientCol, pEffectCol, tEffectCol, descCol);
+        tableDrugs.getColumns().addAll(nameCol, formCol, manufacturerCol, ingredientCol, pEffectCol, tEffectCol, descCol);
 
     }
 
     private void initializeDrugstoreTable(){
-        table_drugstores.getColumns().clear();
+        tableDrugstores.getColumns().clear();
 
         TableColumn<Drugstore, String> nameCol = new TableColumn<>("Название");
         nameCol.setCellValueFactory(
@@ -257,6 +403,6 @@ public class ViewFX implements View, Initializable {
                     return c;
                 });
 
-        table_drugstores.getColumns().addAll(nameCol, districtCol, addressCol, phoneCol, hoursCol, boolCol);
+        tableDrugstores.getColumns().addAll(nameCol, districtCol, addressCol, phoneCol, hoursCol, boolCol);
     }
 }

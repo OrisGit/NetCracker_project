@@ -34,14 +34,20 @@ public class Controller implements UserRequestSelectListener {
                 case GET_ALL_DRUGSTORE: view.displayDrugstores(drugstoreDAO.getAll()); break;
                 case GET_DRUGS_WITH_PARAMETERS:break;
                 case GET_DRUGSTORE_WITH_PARAMETERS:break;
-                case ADD_DRUG:break;
+                case ADD_DRUG:
+                    drugDAO.add((DrugEntity) eo.getEventSource());
+                    view.displayDrugs(drugDAO.getAll());
+                    break;
                 case DELETE_DRUG:
                     drugDAO.delete((DrugEntity) eo.getEventSource());
                     view.displayDrugs(drugDAO.getAll());
                     break;
                 case UPDATE_DRUG:break;
-                case ADD_DRUGSTORE:break;
-                case DELTE_DRUGSTORE:
+                case ADD_DRUGSTORE:
+                    drugstoreDAO.add((DrugstoreEntity) eo.getEventSource());
+                    view.displayDrugstores(drugstoreDAO.getAll());
+                    break;
+                case DELETE_DRUGSTORE:
                     drugstoreDAO.delete((DrugstoreEntity) eo.getEventSource());
                     view.displayDrugstores(drugstoreDAO.getAll());
                     break;

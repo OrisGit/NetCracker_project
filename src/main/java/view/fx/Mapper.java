@@ -19,7 +19,7 @@ public class Mapper {
     public static Drugstore from(DrugstoreEntity drugstoreEntity) {
         return new Drugstore(drugstoreEntity.getName(), drugstoreEntity.getDistrict(), drugstoreEntity.getStreet(),
                 drugstoreEntity.getBuilding(), Objects.toString(drugstoreEntity.getPhone(), ""),
-                drugstoreEntity.getWorkingHours(), Boolean.valueOf(drugstoreEntity.getIsRoundTheClock().toString()));
+                drugstoreEntity.getWorkingHours(), drugstoreEntity.getIsRoundTheClock()!=0);
     }
 
     public static LinkedList fromAll(List entities) {

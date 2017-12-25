@@ -2,10 +2,13 @@ package view.fx;
 
 import javafx.application.Application;
 import controller.Controller;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 
@@ -24,6 +27,10 @@ public class ViewTest extends Application {
             root = loader.load();
             primaryStage.setScene(new Scene(root));
             ViewFX.setStage(primaryStage);
+            primaryStage.setOnCloseRequest(event -> {
+                Platform.exit();
+                System.exit(0);
+            });
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
