@@ -4,6 +4,8 @@ import event.*;
 import model.entities.DrugEntity;
 import model.entities.DrugstoreEntity;
 
+import model.entities.PharmachologicEffectEntity;
+import model.entities.TherapeuticEffectEntity;
 import parameters.Parameters;
 import parameters.ParametersBuilder;
 import de.vandermeer.asciitable.AsciiTable;
@@ -59,6 +61,14 @@ public class TextView implements View{
         at.getContext().setGrid(A7_Grids.minusBarPlusEquals());
 
         System.out.println(at.render());
+    }
+
+    public void displayPharmacologicEffects(List<PharmachologicEffectEntity> pharmachologicEffects) {
+        //
+    }
+
+    public void displayTherapeuticEffects(List<TherapeuticEffectEntity> therapeuticEffects) {
+        //
     }
 
     public void displayError(String message) {

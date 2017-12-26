@@ -3,6 +3,7 @@ package view.fx;
 import event.Event;
 import event.EventObjectImpl;
 import event.UserRequestSelectListener;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,8 +13,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.entities.DrugEntity;
 import model.entities.DrugstoreEntity;
 import model.entities.PharmachologicEffectEntity;
@@ -30,14 +33,9 @@ import model.interfaces.TEffectDAO;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ViewFX implements View, Initializable {
-
-
     @FXML
     private TableView tableDrugs;
     @FXML
@@ -45,6 +43,8 @@ public class ViewFX implements View, Initializable {
     private UserRequestSelectListener selectListener;
     private List<DrugEntity> drugs;
     private List<DrugstoreEntity> drugstores;
+    private List<PharmachologicEffectEntity> pharmachologicEffects;
+    private List<TherapeuticEffectEntity> therapeuticEffects;
     private static Stage stage;
 
     public static void setStage(Stage stage) {
@@ -79,6 +79,16 @@ public class ViewFX implements View, Initializable {
     }
 
     @Override
+    public void displayPharmacologicEffects(List<PharmachologicEffectEntity> pharmachologicEffects) {
+        this.pharmachologicEffects = pharmachologicEffects;
+    }
+
+    @Override
+    public void displayTherapeuticEffects(List<TherapeuticEffectEntity> therapeuticEffects) {
+        this.therapeuticEffects = therapeuticEffects;
+    }
+
+    @Override
     public void displayError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Ошибка");
@@ -91,6 +101,8 @@ public class ViewFX implements View, Initializable {
     public void run() {
         showAllDrugs();
         showAllDrugstores();
+        selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_P_EFFECTS));
+        selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_T_EFFECTS));
     }
 
 
@@ -102,7 +114,7 @@ public class ViewFX implements View, Initializable {
 
     @FXML
     public void showAllDrugstores() {
-        EventObjectImpl<Object> eo = new EventObjectImpl<>(null, Event.GET_ALL_DRUGSTORE);
+        EventObjectImpl<Object> eo = new EventObjectImpl<>(null, Event.GET_ALL_DRUGSTORES);
         selectListener.actionPerfomed(eo);
     }
 
@@ -182,24 +194,21 @@ public class ViewFX implements View, Initializable {
         TextField releaseForm = new TextField();
         TextField manufacturer = new TextField();
         TextField activeIngredient = new TextField();
-        ComboBox<PharmachologicEffectEntity> pEffectSelector = new ComboBox<>();
-        //<editor-fold>
-        /*
-        ObservableList<PharmachologicEffectEntity> list = FXCollections.observableArrayList();
-        //list.add(new PharmachologicEffectEntity());
-        //...
-        pEffectSelector.setCellFactory(
-        new Callback<ListView<PharmachologicEffectEntity>, ListCell<PharmachologicEffectEntity>>(){
+        TextArea description = new TextArea();
+        description.setPrefWidth(350);
 
+        ListView<PharmachologicEffectEntity> pEffectSelector = new ListView<>();
+        pEffectSelector.setPrefSize(300, 100);
+
+        pEffectSelector.setCellFactory(
+                new Callback<ListView<PharmachologicEffectEntity>, ListCell<PharmachologicEffectEntity>>(){
             @Override
             public ListCell<PharmachologicEffectEntity> call(ListView<PharmachologicEffectEntity> param) {
 
                 return new ListCell<PharmachologicEffectEntity>(){
-
                     @Override
                     public void updateItem(PharmachologicEffectEntity item, boolean empty) {
                         super.updateItem(item, empty);
-
                         if(item != null) {
                             setText(item.getName());
                         } else {
@@ -210,12 +219,45 @@ public class ViewFX implements View, Initializable {
                 };
             }
         });
-        pEffectSelector.getItems().addAll(list);
-        */
-        //</editor-fold>
-        ComboBox<TherapeuticEffectEntity> tEffectSelector = new ComboBox<>();
-        //
-        TextArea description = new TextArea();
+
+        pEffectSelector.getItems().addAll(pharmachologicEffects);
+
+        Button addPEffectBtn = new Button("Добавить...");
+        addPEffectBtn.setOnAction(event -> {
+            addPharmacologicEffect();
+            selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_P_EFFECTS));
+        });
+
+        ListView<TherapeuticEffectEntity> tEffectSelector = new ListView<>();
+        tEffectSelector.setPrefSize(300, 100);
+
+        tEffectSelector.setCellFactory(
+                new Callback<ListView<TherapeuticEffectEntity>, ListCell<TherapeuticEffectEntity>>(){
+                    @Override
+                    public ListCell<TherapeuticEffectEntity> call(ListView<TherapeuticEffectEntity> param) {
+
+                        return new ListCell<TherapeuticEffectEntity>(){
+                            @Override
+                            public void updateItem(TherapeuticEffectEntity item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if(item != null) {
+                                    setText(String.format("%s: %s", item.getName(), item.getDescription()));
+                                } else {
+                                    setText(null);
+                                }
+                            }
+
+                        };
+                    }
+                });
+
+        tEffectSelector.getItems().addAll(therapeuticEffects);
+
+        Button addTEffectBtn = new Button("Добавить...");
+        addTEffectBtn.setOnAction(event -> {
+            addTherapeuticEffect();
+            selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_T_EFFECTS));
+        });
 
         grid.add(new Label("Название:"), 0, 0);
         grid.add(name, 1, 0);
@@ -226,9 +268,9 @@ public class ViewFX implements View, Initializable {
         grid.add(new Label("Активный ингредиент:"), 0, 3);
         grid.add(activeIngredient, 1, 3);
         grid.add(new Label("Фармакологический эффект:"), 0, 4);
-        grid.add(pEffectSelector, 1, 4);
+        grid.add(new HBox(5, pEffectSelector, addPEffectBtn), 1, 4);
         grid.add(new Label("Терапевтический эффект:"), 0, 5);
-        grid.add(tEffectSelector, 1, 5);
+        grid.add(new HBox(5, tEffectSelector, addTEffectBtn), 1, 5);
         grid.add(new Label("Описание:"), 0, 6);
         grid.add(description, 1, 6);
 
@@ -241,8 +283,8 @@ public class ViewFX implements View, Initializable {
                         && !activeIngredient.getText().isEmpty() && !pEffectSelector.getSelectionModel().isEmpty()
                         && !tEffectSelector.getSelectionModel().isEmpty()) {
                     return new DrugEntity(name.getText(), releaseForm.getText(), manufacturer.getText(),
-                            activeIngredient.getText(), pEffectSelector.getValue(), tEffectSelector.getValue(),
-                            description.getText());
+                            activeIngredient.getText(), pEffectSelector.getSelectionModel().getSelectedItem(),
+                            tEffectSelector.getSelectionModel().getSelectedItem(), description.getText());
                 }
             }
             return null;
@@ -253,6 +295,82 @@ public class ViewFX implements View, Initializable {
         result.ifPresent(drugEntity -> {
             EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_DRUG);
             selectListener.actionPerfomed(eo);
+        });
+    }
+
+    public void addPharmacologicEffect(){
+        Dialog<PharmachologicEffectEntity> dialog = new Dialog<>();
+        dialog.setTitle("Новый фармакологический эффект");
+        dialog.setHeaderText(null);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        TextField name = new TextField();
+        TextArea description = new TextArea();
+
+        grid.add(new Label("Название:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.add(new Label("Описание:"), 0, 1);
+        grid.add(description, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                if (!name.getText().isEmpty()) {
+                    return new PharmachologicEffectEntity(name.getText(), description.getText());
+                }
+            }
+            return null;
+        });
+
+        Optional<PharmachologicEffectEntity> result = dialog.showAndWait();
+
+        result.ifPresent(pharmachologicEffectEntity -> {
+            EventObjectImpl<PharmachologicEffectEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_P_EFFECT);
+            selectListener.actionPerfomed(eo);
+            selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_P_EFFECTS));
+        });
+    }
+
+    public void addTherapeuticEffect(){
+        Dialog<TherapeuticEffectEntity> dialog = new Dialog<>();
+        dialog.setTitle("Новый терапевтический эффект");
+        dialog.setHeaderText(null);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        TextField name = new TextField();
+        TextArea description = new TextArea();
+
+        grid.add(new Label("Название:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.add(new Label("Описание:"), 0, 1);
+        grid.add(description, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                if (!name.getText().isEmpty()) {
+                    return new TherapeuticEffectEntity(name.getText(), description.getText());
+                }
+            }
+            return null;
+        });
+
+        Optional<TherapeuticEffectEntity> result = dialog.showAndWait();
+
+        result.ifPresent(therapeuticEffectEntity -> {
+            EventObjectImpl<TherapeuticEffectEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_T_EFFECT);
+            selectListener.actionPerfomed(eo);
+            selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_T_EFFECTS));
         });
     }
 

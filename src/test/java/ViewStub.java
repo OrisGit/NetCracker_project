@@ -3,6 +3,8 @@ import event.EventObject;
 import event.EventObjectImpl;
 import model.entities.DrugEntity;
 import model.entities.DrugstoreEntity;
+import model.entities.PharmachologicEffectEntity;
+import model.entities.TherapeuticEffectEntity;
 import parameters.Parameters;
 import parameters.ParametersBuilder;
 import view.View;
@@ -33,6 +35,16 @@ public class ViewStub implements View{
     }
 
     @Override
+    public void displayPharmacologicEffects(List<PharmachologicEffectEntity> pharmachologicEffects) {
+        pharmachologicEffects.forEach(System.out::println);
+    }
+
+    @Override
+    public void displayTherapeuticEffects(List<TherapeuticEffectEntity> therapeuticEffects) {
+        therapeuticEffects.forEach(System.out::println);
+    }
+
+    @Override
     public void displayError(String message) {
         System.out.println(message);
     }
@@ -43,7 +55,7 @@ public class ViewStub implements View{
         if(sc.next().equals("1")){
             ParametersBuilder builder = new ParametersBuilder();
             Parameters parameters = builder.createParameters();
-            EventObject eventObject = new EventObjectImpl(parameters,Event.GET_ALL_DRUGSTORE);
+            EventObject eventObject = new EventObjectImpl(parameters,Event.GET_ALL_DRUGSTORES);
             userRequestSelectListener.actionPerfomed(eventObject);
         }else{
             ParametersBuilder builder = new ParametersBuilder();

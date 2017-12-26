@@ -13,13 +13,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.fx.ViewFX">
-   <MenuBar prefHeight="25.0" prefWidth="655.0" AnchorPane.bottomAnchor="375.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.fx.ViewFX">
+   <MenuBar prefHeight="25.0" prefWidth="700.0" AnchorPane.bottomAnchor="375.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
      <menus>
        <Menu mnemonicParsing="false" text="File">
          <items>
            <MenuItem mnemonicParsing="false" text="Import" />
-               <MenuItem mnemonicParsing="false" text="Export" onAction="#showExportWindow"/>
+               <MenuItem mnemonicParsing="false" onAction="#showExportWindow" text="Export" />
          </items>
        </Menu>
        <Menu mnemonicParsing="false" text="Help">
@@ -29,82 +29,68 @@
        </Menu>
      </menus>
    </MenuBar>
-   <TabPane prefHeight="322.0" prefWidth="474.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+   <TabPane prefHeight="375.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
      <tabs>
        <Tab text="Лекарства">
          <content>
-           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                  <children>
-                      <HBox prefHeight="371.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <VBox prefWidth="200.0" HBox.hgrow="NEVER">
-                              <ToolBar prefHeight="25.0" prefWidth="200.0">
-                                  <VBox.margin>
-                                      <Insets />
-                                  </VBox.margin>
-                              </ToolBar>
-                              <Button fx:id="addDrugBtn" mnemonicParsing="false" onAction="#addDrug" prefHeight="25.0" prefWidth="190.0" text="Добавить">
-                                  <VBox.margin>
-                                      <Insets left="5.0" right="5.0" top="5.0" />
-                                  </VBox.margin>
-                              </Button>
-                              <Button fx:id="deleteDrugBtn" mnemonicParsing="false" onAction="#deleteDrug" prefHeight="25.0" prefWidth="190.0" text="Удалить">
-                                  <VBox.margin>
-                                      <Insets left="5.0" right="5.0" top="5.0" />
-                                  </VBox.margin>
-                              </Button>
-                              <Button fx:id="updateDrugBtn" mnemonicParsing="false" onAction="#addDrug" prefHeight="25.0" prefWidth="190.0" text="Изменить">
-                                  <VBox.margin>
-                                      <Insets left="5.0" right="5.0" top="5.0" />
-                                  </VBox.margin>
-                              </Button>
-                          </VBox>
-                          <AnchorPane prefHeight="430.0" prefWidth="600.0">
-                              <TableView fx:id="tableDrugs" prefHeight="372.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                          </AnchorPane>
-                      </HBox>
-                  </children>
-               </AnchorPane>
+                <HBox prefHeight="375.0" prefWidth="700.0">
+                    <VBox prefWidth="200.0" HBox.hgrow="NEVER">
+                        <ToolBar prefHeight="25.0" prefWidth="200.0">
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
+                        </ToolBar>
+                        <Button fx:id="addDrugBtn" mnemonicParsing="false" onAction="#addDrug" prefHeight="25.0" prefWidth="190.0" text="Добавить">
+                            <VBox.margin>
+                                <Insets left="5.0" right="5.0" top="5.0" />
+                            </VBox.margin>
+                        </Button>
+                        <Button fx:id="deleteDrugBtn" mnemonicParsing="false" onAction="#deleteDrug" prefHeight="25.0" prefWidth="190.0" text="Удалить">
+                            <VBox.margin>
+                                <Insets left="5.0" right="5.0" top="5.0" />
+                            </VBox.margin>
+                        </Button>
+                        <Button fx:id="updateDrugBtn" mnemonicParsing="false" onAction="#addDrug" prefHeight="25.0" prefWidth="190.0" text="Изменить">
+                            <VBox.margin>
+                                <Insets left="5.0" right="5.0" top="5.0" />
+                            </VBox.margin>
+                        </Button>
+                    </VBox>
+                     <TableView fx:id="tableDrugs" prefHeight="375.0" prefWidth="600.0" />
+                </HBox>
          </content>
        </Tab>
        <Tab text="Аптеки">
          <content>
-           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <HBox prefHeight="375.0" prefWidth="700.0">
                   <children>
-                     <HBox prefHeight="371.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <VBox prefWidth="200.0" HBox.hgrow="NEVER">
                         <children>
-                           <VBox prefWidth="200.0" HBox.hgrow="NEVER">
-                              <children>
-                                 <ToolBar prefHeight="25.0" prefWidth="200.0">
-                                    <VBox.margin>
-                                       <Insets />
-                                    </VBox.margin>
-                                 </ToolBar>
-                                 <Button fx:id="addDrugstoreBtn" mnemonicParsing="false" onAction="#addDrugstore" prefHeight="25.0" prefWidth="190.0" text="Добавить">
-                                    <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="5.0" />
-                                    </VBox.margin>
-                                 </Button>
-                                 <Button fx:id="deleteDrugstoreBtn" mnemonicParsing="false" onAction="#deleteDrugstore"  prefHeight="25.0" prefWidth="190.0" text="Удалить">
-                                    <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="5.0" />
-                                    </VBox.margin>
-                                 </Button>
-                                 <Button fx:id="updateDrugstoreBtn" mnemonicParsing="false" onAction="#addDrug" prefHeight="25.0" prefWidth="190.0" text="Изменить">
-                                    <VBox.margin>
-                                       <Insets left="5.0" right="5.0" top="5.0" />
-                                    </VBox.margin>
-                                 </Button>
-                              </children>
-                           </VBox>
-                           <AnchorPane prefHeight="430.0" prefWidth="600.0">
-                              <children>
-                                 <TableView fx:id="tableDrugstores" prefHeight="372.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                              </children>
-                           </AnchorPane>
+                           <ToolBar prefHeight="25.0" prefWidth="200.0">
+                              <VBox.margin>
+                                 <Insets />
+                              </VBox.margin>
+                           </ToolBar>
+                           <Button fx:id="addDrugstoreBtn" mnemonicParsing="false" onAction="#addDrugstore" prefHeight="25.0" prefWidth="190.0" text="Добавить">
+                              <VBox.margin>
+                                 <Insets left="5.0" right="5.0" top="5.0" />
+                              </VBox.margin>
+                           </Button>
+                           <Button fx:id="deleteDrugstoreBtn" mnemonicParsing="false" onAction="#deleteDrugstore" prefHeight="25.0" prefWidth="190.0" text="Удалить">
+                              <VBox.margin>
+                                 <Insets left="5.0" right="5.0" top="5.0" />
+                              </VBox.margin>
+                           </Button>
+                           <Button fx:id="updateDrugstoreBtn" mnemonicParsing="false" onAction="#addDrug" prefHeight="25.0" prefWidth="190.0" text="Изменить">
+                              <VBox.margin>
+                                 <Insets left="5.0" right="5.0" top="5.0" />
+                              </VBox.margin>
+                           </Button>
                         </children>
-                     </HBox>
+                     </VBox>
+                     <TableView fx:id="tableDrugstores" prefHeight="375.0" prefWidth="600.0" />
                   </children>
-               </AnchorPane>
+               </HBox>
          </content>
        </Tab>
      </tabs>

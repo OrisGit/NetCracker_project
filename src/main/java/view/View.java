@@ -3,6 +3,8 @@ package view;
 import event.UserRequestSelectListener;
 import model.entities.DrugEntity;
 import model.entities.DrugstoreEntity;
+import model.entities.PharmachologicEffectEntity;
+import model.entities.TherapeuticEffectEntity;
 
 import java.util.List;
 
@@ -32,6 +34,20 @@ public interface View {
      * @see DrugstoreEntity
      */
     void displayDrugstores(List<DrugstoreEntity> drugstores);
+
+    /**
+     * <p>Передаёт представлению список фармакологических эффектов для вывода</p>
+     * @param pharmachologicEffects - список фармакологических эффектов
+     * @see PharmachologicEffectEntity
+     */
+    void displayPharmacologicEffects(List<PharmachologicEffectEntity> pharmachologicEffects);
+
+    /**
+     * <p>Передаёт представлению список терапевтических эффектов для вывода</p>
+     * @param therapeuticEffects - список терапевтических эффектов
+     * @see TherapeuticEffectEntity
+     */
+    void displayTherapeuticEffects(List<TherapeuticEffectEntity> therapeuticEffects);
 
     /**
      * <p>Передаёт представлению сообщение об ошибке для вывода</p>
