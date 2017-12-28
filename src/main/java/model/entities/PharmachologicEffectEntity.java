@@ -63,7 +63,7 @@ public class PharmachologicEffectEntity {
 
         if (!id.equals(that.id)) return false;
         if (!name.equals(that.name)) return false;
-        return description != null ? description.equals(that.description) : that.description != null;
+        return description != null ? description.equals(that.description) : that.description == null;
     }
 
     @Override

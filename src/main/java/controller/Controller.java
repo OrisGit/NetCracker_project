@@ -2,18 +2,9 @@ package controller;
 
 import event.UserRequestSelectListener;
 import event.EventObject;
-import model.dao.DrugDAOImpl;
-import model.dao.DrugstoreDAOImpl;
-import model.dao.PEffectDAOImpl;
-import model.dao.TEffectDAOImpl;
-import model.entities.DrugEntity;
-import model.entities.DrugstoreEntity;
-import model.entities.PharmachologicEffectEntity;
-import model.entities.TherapeuticEffectEntity;
-import model.interfaces.DrugDAO;
-import model.interfaces.DrugstoreDAO;
-import model.interfaces.PEffectDAO;
-import model.interfaces.TEffectDAO;
+import model.dao.*;
+import model.entities.*;
+import model.interfaces.*;
 import view.*;
 
 public class Controller implements UserRequestSelectListener {
@@ -22,6 +13,7 @@ public class Controller implements UserRequestSelectListener {
     DrugstoreDAO drugstoreDAO = new DrugstoreDAOImpl();
     PEffectDAO pEffectDAO = new PEffectDAOImpl();
     TEffectDAO tEffectDAO = new TEffectDAOImpl();
+    PriceDAO priceDAO = new PriceDAOImpl();
     View view;
 
     public Controller(View view) {
@@ -83,6 +75,23 @@ public class Controller implements UserRequestSelectListener {
                 case GET_ALL_T_EFFECTS:
                     view.displayTherapeuticEffects(tEffectDAO.getAll());
                     break;
+                case GET_ALL_PRICES:
+                    view.displayPrices(priceDAO.getAll());
+                    break;
+                case ADD_PRICE:
+                    priceDAO.add((PriceEntity) eo.getEventSource());
+                    view.displayPrices(priceDAO.getAll());
+                    break;
+                case DELETE_PRICE:
+                    priceDAO.delete((PriceEntity) eo.getEventSource());
+                    view.displayPrices(priceDAO.getAll());
+                    break;
+                case UPDATE_PRICE:
+                    priceDAO.update((PriceEntity) eo.getEventSource());
+                    view.displayPrices(priceDAO.getAll());
+                    break;
+
+
             }
         }catch (Exception e){
             view.displayError(e.getMessage());

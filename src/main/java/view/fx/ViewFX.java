@@ -3,7 +3,6 @@ package view.fx;
 import event.Event;
 import event.EventObjectImpl;
 import event.UserRequestSelectListener;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,36 +17,38 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import model.entities.DrugEntity;
-import model.entities.DrugstoreEntity;
-import model.entities.PharmachologicEffectEntity;
-import model.entities.TherapeuticEffectEntity;
-import model.import_export.ExportManager;
-import model.import_export.JsonExportManager;
-import view.View;
 import model.dao.DAOException;
 import model.dao.TEffectDAOImpl;
-import model.import_export.*;
-
+import model.entities.*;
+import model.import_export.ExportException;
+import model.import_export.ExportManager;
+import model.import_export.JsonExportManager;
+import model.import_export.XmlExportManager;
 import model.interfaces.TEffectDAO;
+import view.View;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 public class ViewFX implements View, Initializable {
+    private static Stage stage;
     @FXML
     private TableView tableDrugs;
     @FXML
     private TableView tableDrugstores;
+    @FXML
+    private TableView tablePrices;
     private UserRequestSelectListener selectListener;
     private List<DrugEntity> drugs;
     private List<DrugstoreEntity> drugstores;
+    private List<PriceEntity> prices;
     private List<PharmachologicEffectEntity> pharmachologicEffects;
     private List<TherapeuticEffectEntity> therapeuticEffects;
-    private static Stage stage;
 
     public static void setStage(Stage stage) {
         ViewFX.stage = stage;
@@ -81,6 +82,17 @@ public class ViewFX implements View, Initializable {
     }
 
     @Override
+    public void displayPrices(List<PriceEntity> prices) {
+        this.prices = prices;
+        ObservableList<Price> data = tablePrices.getItems();
+        data.clear();
+
+        LinkedList<Price> priceList = Mapper.fromAll(prices);
+
+        data.addAll(priceList);
+    }
+
+    @Override
     public void displayPharmacologicEffects(List<PharmachologicEffectEntity> pharmachologicEffects) {
         this.pharmachologicEffects = pharmachologicEffects;
     }
@@ -103,30 +115,34 @@ public class ViewFX implements View, Initializable {
     public void run() {
         showAllDrugs();
         showAllDrugstores();
+        showAllPrices();
         selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_P_EFFECTS));
         selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_T_EFFECTS));
     }
 
 
-    @FXML
     public void showAllDrugs() {
         EventObjectImpl<Object> eo = new EventObjectImpl<>(null, Event.GET_ALL_DRUGS);
         selectListener.actionPerfomed(eo);
     }
 
-    @FXML
     public void showAllDrugstores() {
         EventObjectImpl<Object> eo = new EventObjectImpl<>(null, Event.GET_ALL_DRUGSTORES);
         selectListener.actionPerfomed(eo);
     }
 
+    public void showAllPrices() {
+        EventObjectImpl<Object> eo = new EventObjectImpl<>(null, Event.GET_ALL_PRICES);
+        selectListener.actionPerfomed(eo);
+    }
+
     @FXML
-    public void exportToJSON(){
+    public void exportToJSON() {
         ExportManager<TherapeuticEffectEntity> exportManager = new JsonExportManager<>(true);
         TEffectDAO daoManager = new TEffectDAOImpl();
         //TODO проверить файл
         File file = new File("E:/export.json");
-        if(!file.exists()){
+        if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
@@ -134,7 +150,7 @@ public class ViewFX implements View, Initializable {
             }
         }
         try {
-            exportManager.exportToFile("E:/export.json",daoManager.getAll());
+            exportManager.exportToFile("E:/export.json", daoManager.getAll());
         } catch (ExportException e) {
             e.printStackTrace();
         } catch (DAOException e) {
@@ -143,12 +159,12 @@ public class ViewFX implements View, Initializable {
     }
 
     @FXML
-    public void exportToXML(){
-        ExportManager<TherapeuticEffectEntity> exportManager = new XmlExportManager<>(TherapeuticEffectEntity.class,true);
+    public void exportToXML() {
+        ExportManager<TherapeuticEffectEntity> exportManager = new XmlExportManager<>(TherapeuticEffectEntity.class, true);
         TEffectDAO daoManager = new TEffectDAOImpl();
         //TODO проверить файл
         File file = new File("E:/export.xml");
-        if(!file.exists()){
+        if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
@@ -156,7 +172,7 @@ public class ViewFX implements View, Initializable {
             }
         }
         try {
-            exportManager.exportToFile("E:/export.xml",daoManager.getAll());
+            exportManager.exportToFile("E:/export.xml", daoManager.getAll());
         } catch (ExportException e) {
             e.printStackTrace();
         } catch (DAOException e) {
@@ -164,71 +180,7 @@ public class ViewFX implements View, Initializable {
         }
     }
 
-    @FXML
-    public void deleteDrug(){
-        int index = tableDrugs.getSelectionModel().getSelectedIndex();
-        if(index!=-1){
-            EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(drugs.get(index), Event.DELETE_DRUG);
-            selectListener.actionPerfomed(eo);
-        }
-    }
-
-    @FXML
-    public void deleteDrugstore(){
-        int index = tableDrugstores.getSelectionModel().getSelectedIndex();
-        if(index!=-1){
-            EventObjectImpl<DrugstoreEntity> eo = new EventObjectImpl<>(drugstores.get(index), Event.DELETE_DRUGSTORE);
-            selectListener.actionPerfomed(eo);
-        }
-    }
-
-    @FXML
-    public void addDrug() {
-
-        Dialog<DrugEntity> dialog = createDrugDialog();
-
-        Optional<DrugEntity> result = dialog.showAndWait();
-
-        result.ifPresent(drugEntity -> {
-            EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_DRUG);
-            selectListener.actionPerfomed(eo);
-        });
-    }
-
-    @FXML
-    public void updateDrug(){
-
-        int indexSelectElement = tableDrugs.getSelectionModel().getSelectedIndex();
-
-        if(indexSelectElement!=-1){
-            Dialog<DrugEntity> dialog = createDrugDialog();
-
-            Node content = dialog.getDialogPane().getContent();
-
-            setTextInTextControl(content,"#name",drugs.get(indexSelectElement).getName());
-            setTextInTextControl(content,"#releaseForm",drugs.get(indexSelectElement).getReleaseForm());
-            setTextInTextControl(content,"#manufacturer",drugs.get(indexSelectElement).getManufacturer());
-            setTextInTextControl(content,"#activeIngredient",drugs.get(indexSelectElement).getActiveIngredient());
-            setTextInTextControl(content,"#description",drugs.get(indexSelectElement).getDescription());
-            setSelectInSelectorControl(content,"#pEffectSelector",
-                    drugs.get(indexSelectElement).getPharmachologicEffect(),pharmachologicEffects);
-            setSelectInSelectorControl(content,"#tEffectSelector",
-                    drugs.get(indexSelectElement).getTherapeuticEffect(),therapeuticEffects);
-
-            Optional<DrugEntity> result = dialog.showAndWait();
-
-            result.ifPresent(drugEntity -> {
-                DrugEntity drug = result.get();
-                drug.setId(drugs.get(indexSelectElement).getId());
-                EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(drug, Event.UPDATE_DRUG);
-                selectListener.actionPerfomed(eo);
-            });
-        }else{
-            displayError("Выберите строку");
-        }
-    }
-
-    public void addPharmacologicEffect(){
+    public void addPharmacologicEffect() {
         Dialog<PharmachologicEffectEntity> dialog = new Dialog<>();
         dialog.setTitle("Новый фармакологический эффект");
         dialog.setHeaderText(null);
@@ -266,7 +218,7 @@ public class ViewFX implements View, Initializable {
         });
     }
 
-    public void addTherapeuticEffect(){
+    public void addTherapeuticEffect() {
         Dialog<TherapeuticEffectEntity> dialog = new Dialog<>();
         dialog.setTitle("Новый терапевтический эффект");
         dialog.setHeaderText(null);
@@ -305,6 +257,60 @@ public class ViewFX implements View, Initializable {
     }
 
     @FXML
+    public void addDrug() {
+
+        Dialog<DrugEntity> dialog = createDrugDialog();
+
+        Optional<DrugEntity> result = dialog.showAndWait();
+
+        result.ifPresent(drugEntity -> {
+            EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_DRUG);
+            selectListener.actionPerfomed(eo);
+        });
+    }
+
+    @FXML
+    public void updateDrug() {
+        int indexSelectElement = tableDrugs.getSelectionModel().getSelectedIndex();
+
+        if (indexSelectElement != -1) {
+            Dialog<DrugEntity> dialog = createDrugDialog();
+
+            Node content = dialog.getDialogPane().getContent();
+
+            setTextInTextControl(content, "#name", drugs.get(indexSelectElement).getName());
+            setTextInTextControl(content, "#releaseForm", drugs.get(indexSelectElement).getReleaseForm());
+            setTextInTextControl(content, "#manufacturer", drugs.get(indexSelectElement).getManufacturer());
+            setTextInTextControl(content, "#activeIngredient", drugs.get(indexSelectElement).getActiveIngredient());
+            setTextInTextControl(content, "#description", drugs.get(indexSelectElement).getDescription());
+            setSelectInSelectorControl(content, "#pEffectSelector",
+                    drugs.get(indexSelectElement).getPharmachologicEffect(), pharmachologicEffects);
+            setSelectInSelectorControl(content, "#tEffectSelector",
+                    drugs.get(indexSelectElement).getTherapeuticEffect(), therapeuticEffects);
+
+            Optional<DrugEntity> result = dialog.showAndWait();
+
+            result.ifPresent(drugEntity -> {
+                DrugEntity drug = result.get();
+                drug.setId(drugs.get(indexSelectElement).getId());
+                EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(drug, Event.UPDATE_DRUG);
+                selectListener.actionPerfomed(eo);
+            });
+        } else {
+            displayError("Выберите строку");
+        }
+    }
+
+    @FXML
+    public void deleteDrug() {
+        int index = tableDrugs.getSelectionModel().getSelectedIndex();
+        if (index != -1) {
+            EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(drugs.get(index), Event.DELETE_DRUG);
+            selectListener.actionPerfomed(eo);
+        }
+    }
+
+    @FXML
     public void addDrugstore() {
 
         Dialog<DrugstoreEntity> dialog = createDrugstoreDialog();
@@ -318,22 +324,21 @@ public class ViewFX implements View, Initializable {
     }
 
     @FXML
-    public void updateDrugstore(){
-
+    public void updateDrugstore() {
         int indexSelectElement = tableDrugstores.getSelectionModel().getSelectedIndex();
 
-        if(indexSelectElement!=-1){
+        if (indexSelectElement != -1) {
             Dialog<DrugstoreEntity> dialog = createDrugstoreDialog();
 
             Node content = dialog.getDialogPane().getContent();
 
-            setTextInTextControl(content,"#name",drugstores.get(indexSelectElement).getName());
-            setTextInTextControl(content,"#district",drugstores.get(indexSelectElement).getDistrict());
-            setTextInTextControl(content,"#street",drugstores.get(indexSelectElement).getStreet());
-            setTextInTextControl(content,"#building",drugstores.get(indexSelectElement).getBuilding());
-            setTextInTextControl(content,"#phone", String.valueOf(drugstores.get(indexSelectElement).getPhone()));
-            setTextInTextControl(content,"#hours",drugstores.get(indexSelectElement).getWorkingHours());
-            setBooleanInCheckbox(content,"#isRoundTheClock", drugstores.get(indexSelectElement).getIsRoundTheClock()!=0);
+            setTextInTextControl(content, "#name", drugstores.get(indexSelectElement).getName());
+            setTextInTextControl(content, "#district", drugstores.get(indexSelectElement).getDistrict());
+            setTextInTextControl(content, "#street", drugstores.get(indexSelectElement).getStreet());
+            setTextInTextControl(content, "#building", drugstores.get(indexSelectElement).getBuilding());
+            setTextInTextControl(content, "#phone", String.valueOf(drugstores.get(indexSelectElement).getPhone()));
+            setTextInTextControl(content, "#hours", drugstores.get(indexSelectElement).getWorkingHours());
+            setBooleanInCheckbox(content, "#isRoundTheClock", drugstores.get(indexSelectElement).getIsRoundTheClock()!=0);
 
             Optional<DrugstoreEntity> result = dialog.showAndWait();
 
@@ -343,13 +348,68 @@ public class ViewFX implements View, Initializable {
                 EventObjectImpl<DrugstoreEntity> eo = new EventObjectImpl<>(drugstore, Event.UPDATE_DRUGSTORE);
                 selectListener.actionPerfomed(eo);
             });
-        }else{
+        } else {
             displayError("Выберите строку");
         }
     }
 
     @FXML
-    public void showExportWindow(){
+    public void deleteDrugstore() {
+        int index = tableDrugstores.getSelectionModel().getSelectedIndex();
+        if (index != -1) {
+            EventObjectImpl<DrugstoreEntity> eo = new EventObjectImpl<>(drugstores.get(index), Event.DELETE_DRUGSTORE);
+            selectListener.actionPerfomed(eo);
+        }
+    }
+
+    @FXML
+    public void addPrice() {
+        Dialog<PriceEntity> dialog = createPriceDialog();
+
+        Optional<PriceEntity> result = dialog.showAndWait();
+
+        result.ifPresent(priceEntity -> {
+            EventObjectImpl<PriceEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_PRICE);
+            selectListener.actionPerfomed(eo);
+        });
+    }
+
+    @FXML
+    public void updatePrice() {
+        int indexSelectElement = tablePrices.getSelectionModel().getSelectedIndex();
+
+        if (indexSelectElement != -1) {
+            Dialog<PriceEntity> dialog = createPriceDialog();
+
+            Node content = dialog.getDialogPane().getContent();
+
+            setTextInTextControl(content, "#cost", String.valueOf(prices.get(indexSelectElement).getCost()));
+            setSelectInTable(content, "#drug", prices.get(indexSelectElement).getDrug(), drugs);
+            setSelectInTable(content, "#drugstore", prices.get(indexSelectElement).getDrugstore(), drugstores);
+
+            Optional<PriceEntity> result = dialog.showAndWait();
+
+            result.ifPresent(priceEntity -> {
+                PriceEntity price = result.get();
+                EventObjectImpl<PriceEntity> eo = new EventObjectImpl<>(price, Event.UPDATE_PRICE);
+                selectListener.actionPerfomed(eo);
+            });
+        } else {
+            displayError("Выберите строку");
+        }
+    }
+
+    @FXML
+    public void deletePrice() {
+        int index = tablePrices.getSelectionModel().getSelectedIndex();
+        if (index != -1) {
+            EventObjectImpl<PriceEntity> eo = new EventObjectImpl<>(prices.get(index), Event.DELETE_PRICE);
+            selectListener.actionPerfomed(eo);
+        }
+    }
+
+    @FXML
+    public void showExportWindow() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/export_window.fxml"));
         Parent root;
@@ -370,9 +430,10 @@ public class ViewFX implements View, Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initializeDrugstoreTable();
         initializeDrugTable();
+        initializePriceTable();
     }
 
-    private void initializeDrugTable(){
+    private void initializeDrugTable() {
         tableDrugs.getColumns().clear();
         TableColumn<Drug, String> nameCol = new TableColumn<>("Название");
         nameCol.setCellValueFactory(
@@ -406,7 +467,7 @@ public class ViewFX implements View, Initializable {
 
     }
 
-    private void initializeDrugstoreTable(){
+    private void initializeDrugstoreTable() {
         tableDrugstores.getColumns().clear();
 
         TableColumn<Drugstore, String> nameCol = new TableColumn<>("Название");
@@ -442,7 +503,25 @@ public class ViewFX implements View, Initializable {
         tableDrugstores.getColumns().addAll(nameCol, districtCol, addressCol, phoneCol, hoursCol, boolCol);
     }
 
-    private Dialog<DrugEntity> createDrugDialog(){
+    private void initializePriceTable() {
+        tablePrices.getColumns().clear();
+
+        TableColumn<Price, String> drugCol = new TableColumn<>("Препарат");
+        drugCol.setCellValueFactory(
+                cellData -> cellData.getValue().drugProperty());
+
+        TableColumn<Price, String> drugstoreCol = new TableColumn<>("Аптека");
+        drugstoreCol.setCellValueFactory(
+                cellData -> cellData.getValue().drugstoreProperty());
+
+        TableColumn<Price, String> costCol = new TableColumn<>("Цена");
+        costCol.setCellValueFactory(
+                cellData -> cellData.getValue().costProperty().asString());
+
+        tablePrices.getColumns().addAll(drugCol, drugstoreCol, costCol);
+    }
+
+    private Dialog<DrugEntity> createDrugDialog() {
         Dialog<DrugEntity> dialog = new Dialog<>();
         dialog.setTitle("Новый препарат");
         dialog.setHeaderText(null);
@@ -462,15 +541,15 @@ public class ViewFX implements View, Initializable {
         pEffectSelector.setPrefSize(300, 100);
 
         pEffectSelector.setCellFactory(
-                new Callback<ListView<PharmachologicEffectEntity>, ListCell<PharmachologicEffectEntity>>(){
+                new Callback<ListView<PharmachologicEffectEntity>, ListCell<PharmachologicEffectEntity>>() {
                     @Override
                     public ListCell<PharmachologicEffectEntity> call(ListView<PharmachologicEffectEntity> param) {
 
-                        return new ListCell<PharmachologicEffectEntity>(){
+                        return new ListCell<PharmachologicEffectEntity>() {
                             @Override
                             public void updateItem(PharmachologicEffectEntity item, boolean empty) {
                                 super.updateItem(item, empty);
-                                if(item != null) {
+                                if (item != null) {
                                     setText(item.getName());
                                 } else {
                                     setText(null);
@@ -494,15 +573,15 @@ public class ViewFX implements View, Initializable {
         tEffectSelector.setPrefSize(300, 100);
 
         tEffectSelector.setCellFactory(
-                new Callback<ListView<TherapeuticEffectEntity>, ListCell<TherapeuticEffectEntity>>(){
+                new Callback<ListView<TherapeuticEffectEntity>, ListCell<TherapeuticEffectEntity>>() {
                     @Override
                     public ListCell<TherapeuticEffectEntity> call(ListView<TherapeuticEffectEntity> param) {
 
-                        return new ListCell<TherapeuticEffectEntity>(){
+                        return new ListCell<TherapeuticEffectEntity>() {
                             @Override
                             public void updateItem(TherapeuticEffectEntity item, boolean empty) {
                                 super.updateItem(item, empty);
-                                if(item != null) {
+                                if (item != null) {
                                     setText(String.format("%s: %s", item.getName(), item.getDescription()));
                                 } else {
                                     setText(null);
@@ -564,7 +643,7 @@ public class ViewFX implements View, Initializable {
         return dialog;
     }
 
-    private Dialog<DrugstoreEntity> createDrugstoreDialog(){
+    private Dialog<DrugstoreEntity> createDrugstoreDialog() {
         Dialog<DrugstoreEntity> dialog = new Dialog<>();
         dialog.setTitle("Новая аптека");
         dialog.setHeaderText(null);
@@ -613,7 +692,7 @@ public class ViewFX implements View, Initializable {
                         && !building.getText().isEmpty() && !phone.getText().isEmpty() && !hours.getText().isEmpty()) {
                     return new DrugstoreEntity(name.getText(), district.getText(), street.getText(), building.getText(),
                             Long.valueOf(phone.getText()), hours.getText(),
-                            (short)(isRoundTheClock.isSelected() ? 1 : 0));
+                            (short) (isRoundTheClock.isSelected() ? 1 : 0));
                 }
             }
             return null;
@@ -622,27 +701,81 @@ public class ViewFX implements View, Initializable {
         return dialog;
     }
 
-    private void setTextInTextControl(Node node, String id, String text){
+    private Dialog<PriceEntity> createPriceDialog() {
+        Dialog<PriceEntity> dialog = new Dialog<>();
+        dialog.setTitle("");
+        dialog.setHeaderText(null);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        TextField cost = new TextField();
+        TableView drugsTable = tableDrugs;
+        TableView drugstoresTable = tableDrugstores;
+        drugsTable.setPrefSize(350, 200);
+        drugstoresTable.setPrefSize(350, 200);
+
+        cost.setId("cost");
+        drugsTable.setId("drug");
+        drugstoresTable.setId("drugstore");
+
+        grid.add(drugsTable, 0, 0);
+        grid.add(drugstoresTable, 1, 0);
+        grid.add(new HBox(5, new Label("Цена:"), cost), 0, 1);
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                if (!cost.getText().isEmpty() && !drugsTable.getSelectionModel().isEmpty()
+                        && !drugstoresTable.getSelectionModel().isEmpty()) {
+                    return new PriceEntity(
+                            drugs.get(drugsTable.getSelectionModel().getSelectedIndex()),
+                            drugstores.get(drugstoresTable.getSelectionModel().getSelectedIndex()),
+                            Long.valueOf(cost.getText()));
+                }
+            }
+            return null;
+        });
+
+        return dialog;
+    }
+
+    private void setTextInTextControl(Node node, String id, String text) {
         Node element = node.getScene().lookup(id);
-        if(element instanceof TextInputControl){
+        if (element instanceof TextInputControl) {
             ((TextInputControl) element).setText(text);
         }
     }
 
-    private void setBooleanInCheckbox(Node node, String id, Boolean value){
+    private void setBooleanInCheckbox(Node node, String id, Boolean value) {
         Node element = node.getScene().lookup(id);
-        if(element instanceof CheckBox){
+        if (element instanceof CheckBox) {
             ((CheckBox) element).setSelected(value);
         }
     }
 
-    private void setSelectInSelectorControl(Node node, String id, Object entity, List listEntity){
+    private void setSelectInSelectorControl(Node node, String id, Object entity, List listEntity) {
         Node element = node.getScene().lookup(id);
-        if(element instanceof ListView){
+        if (element instanceof ListView) {
             //TODO: подумать над этим
-            for (int i=0; i<listEntity.size(); i++) {
-                if(listEntity.get(i).equals(entity)){
+            for (int i = 0; i < listEntity.size(); i++) {
+                if (listEntity.get(i).equals(entity)) {
                     ((ListView) element).getSelectionModel().select(i);
+                }
+            }
+        }
+    }
+
+    private void setSelectInTable(Node node, String id, Object entity, List listEntity) {
+        Node element = node.getScene().lookup(id);
+        if (element instanceof TableView) {
+            //TODO: подумать над этим
+            for (int i = 0; i < listEntity.size(); i++) {
+                if (listEntity.get(i).equals(entity)) {
+                    ((TableView) element).getSelectionModel().select(i);
                 }
             }
         }

@@ -126,22 +126,22 @@ public class DrugEntity {
 
         if (!id.equals(that.id)) return false;
         if (!name.equals(that.name)) return false;
-        if (releaseForm != null ? !releaseForm.equals(that.releaseForm) : that.releaseForm != null) return false;
-        if (manufacturer != null ? !manufacturer.equals(that.manufacturer) : that.manufacturer != null) return false;
+        if (!releaseForm.equals(that.releaseForm)) return false;
+        if (!manufacturer.equals(that.manufacturer)) return false;
         if (!activeIngredient.equals(that.activeIngredient)) return false;
         if (pharmachologicEffect != null ? !pharmachologicEffect.equals(that.pharmachologicEffect) : that.pharmachologicEffect != null)
             return false;
         if (therapeuticEffect != null ? !therapeuticEffect.equals(that.therapeuticEffect) : that.therapeuticEffect != null)
             return false;
-        return description != null ? !description.equals(that.description) : that.description != null;
+        return description != null ? description.equals(that.description) : that.description == null;
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
         result = 31 * result + name.hashCode();
-        result = 31 * result + (releaseForm != null ? releaseForm.hashCode() : 0);
-        result = 31 * result + (manufacturer != null ? manufacturer.hashCode() : 0);
+        result = 31 * result + releaseForm.hashCode();
+        result = 31 * result + manufacturer.hashCode();
         result = 31 * result + activeIngredient.hashCode();
         result = 31 * result + (pharmachologicEffect != null ? pharmachologicEffect.hashCode() : 0);
         result = 31 * result + (therapeuticEffect != null ? therapeuticEffect.hashCode() : 0);

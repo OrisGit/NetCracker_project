@@ -1,10 +1,7 @@
 package view;
 
 import event.UserRequestSelectListener;
-import model.entities.DrugEntity;
-import model.entities.DrugstoreEntity;
-import model.entities.PharmachologicEffectEntity;
-import model.entities.TherapeuticEffectEntity;
+import model.entities.*;
 
 import java.util.List;
 
@@ -34,6 +31,13 @@ public interface View {
      * @see DrugstoreEntity
      */
     void displayDrugstores(List<DrugstoreEntity> drugstores);
+
+    /**
+     * <p>Передаёт представлению список цен для вывода</p>
+     * @param prices - список цен
+     * @see PriceEntity
+     */
+    void displayPrices(List<PriceEntity> prices);
 
     /**
      * <p>Передаёт представлению список фармакологических эффектов для вывода</p>

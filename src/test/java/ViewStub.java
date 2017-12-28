@@ -1,10 +1,7 @@
 import event.*;
 import event.EventObject;
 import event.EventObjectImpl;
-import model.entities.DrugEntity;
-import model.entities.DrugstoreEntity;
-import model.entities.PharmachologicEffectEntity;
-import model.entities.TherapeuticEffectEntity;
+import model.entities.*;
 import parameters.Parameters;
 import parameters.ParametersBuilder;
 import view.View;
@@ -32,6 +29,11 @@ public class ViewStub implements View{
     @Override
     public void displayDrugstores(List<DrugstoreEntity> drugstores) {
         drugstores.forEach(System.out::println);
+    }
+
+    @Override
+    public void displayPrices(List<PriceEntity> prices) {
+
     }
 
     @Override
