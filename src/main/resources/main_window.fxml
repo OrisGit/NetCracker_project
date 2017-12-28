@@ -50,7 +50,7 @@
                                 <Insets left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="updateDrugBtn" mnemonicParsing="false" onAction="#addDrug" prefHeight="25.0" prefWidth="190.0" text="Изменить">
+                        <Button fx:id="updateDrugBtn" mnemonicParsing="false" onAction="#updateDrug" prefHeight="25.0" prefWidth="190.0" text="Изменить">
                             <VBox.margin>
                                 <Insets left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>

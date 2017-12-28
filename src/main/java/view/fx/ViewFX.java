@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -34,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class ViewFX implements View, Initializable {
     @FXML
@@ -182,115 +184,8 @@ public class ViewFX implements View, Initializable {
 
     @FXML
     public void addDrug() {
-        Dialog<DrugEntity> dialog = new Dialog<>();
-        dialog.setTitle("Новый препарат");
-        dialog.setHeaderText(null);
 
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-
-        TextField name = new TextField();
-        TextField releaseForm = new TextField();
-        TextField manufacturer = new TextField();
-        TextField activeIngredient = new TextField();
-        TextArea description = new TextArea();
-        description.setPrefWidth(350);
-
-        ListView<PharmachologicEffectEntity> pEffectSelector = new ListView<>();
-        pEffectSelector.setPrefSize(300, 100);
-
-        pEffectSelector.setCellFactory(
-                new Callback<ListView<PharmachologicEffectEntity>, ListCell<PharmachologicEffectEntity>>(){
-            @Override
-            public ListCell<PharmachologicEffectEntity> call(ListView<PharmachologicEffectEntity> param) {
-
-                return new ListCell<PharmachologicEffectEntity>(){
-                    @Override
-                    public void updateItem(PharmachologicEffectEntity item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if(item != null) {
-                            setText(item.getName());
-                        } else {
-                            setText(null);
-                        }
-                    }
-
-                };
-            }
-        });
-
-        pEffectSelector.getItems().addAll(pharmachologicEffects);
-
-        Button addPEffectBtn = new Button("Добавить...");
-        addPEffectBtn.setOnAction(event -> {
-            addPharmacologicEffect();
-            pEffectSelector.getItems().clear();
-            pEffectSelector.getItems().addAll(pharmachologicEffects);
-        });
-
-        ListView<TherapeuticEffectEntity> tEffectSelector = new ListView<>();
-        tEffectSelector.setPrefSize(300, 100);
-
-        tEffectSelector.setCellFactory(
-                new Callback<ListView<TherapeuticEffectEntity>, ListCell<TherapeuticEffectEntity>>(){
-                    @Override
-                    public ListCell<TherapeuticEffectEntity> call(ListView<TherapeuticEffectEntity> param) {
-
-                        return new ListCell<TherapeuticEffectEntity>(){
-                            @Override
-                            public void updateItem(TherapeuticEffectEntity item, boolean empty) {
-                                super.updateItem(item, empty);
-                                if(item != null) {
-                                    setText(String.format("%s: %s", item.getName(), item.getDescription()));
-                                } else {
-                                    setText(null);
-                                }
-                            }
-
-                        };
-                    }
-                });
-
-        tEffectSelector.getItems().addAll(therapeuticEffects);
-
-        Button addTEffectBtn = new Button("Добавить...");
-        addTEffectBtn.setOnAction(event -> {
-            addTherapeuticEffect();
-            tEffectSelector.getItems().clear();
-            tEffectSelector.getItems().addAll(therapeuticEffects);
-        });
-
-        grid.add(new Label("Название:"), 0, 0);
-        grid.add(name, 1, 0);
-        grid.add(new Label("Форма выпуска:"), 0, 1);
-        grid.add(releaseForm, 1, 1);
-        grid.add(new Label("Производитель:"), 0, 2);
-        grid.add(manufacturer, 1, 2);
-        grid.add(new Label("Активный ингредиент:"), 0, 3);
-        grid.add(activeIngredient, 1, 3);
-        grid.add(new Label("Фармакологический эффект:"), 0, 4);
-        grid.add(new HBox(5, pEffectSelector, addPEffectBtn), 1, 4);
-        grid.add(new Label("Терапевтический эффект:"), 0, 5);
-        grid.add(new HBox(5, tEffectSelector, addTEffectBtn), 1, 5);
-        grid.add(new Label("Описание:"), 0, 6);
-        grid.add(description, 1, 6);
-
-        dialog.getDialogPane().setContent(grid);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == ButtonType.OK) {
-                if (!name.getText().isEmpty() && !releaseForm.getText().isEmpty() && !manufacturer.getText().isEmpty()
-                        && !activeIngredient.getText().isEmpty() && !pEffectSelector.getSelectionModel().isEmpty()
-                        && !tEffectSelector.getSelectionModel().isEmpty()) {
-                    return new DrugEntity(name.getText(), releaseForm.getText(), manufacturer.getText(),
-                            activeIngredient.getText(), pEffectSelector.getSelectionModel().getSelectedItem(),
-                            tEffectSelector.getSelectionModel().getSelectedItem(), description.getText());
-                }
-            }
-            return null;
-        });
+        Dialog<DrugEntity> dialog = createDrugDialog();
 
         Optional<DrugEntity> result = dialog.showAndWait();
 
@@ -299,6 +194,41 @@ public class ViewFX implements View, Initializable {
             selectListener.actionPerfomed(eo);
         });
     }
+
+    public void updateDrug(){
+
+        int indexSelectElement = tableDrugs.getSelectionModel().getSelectedIndex();
+
+        if(indexSelectElement!=-1){
+            Dialog<DrugEntity> dialog = createDrugDialog();
+
+            Node content = dialog.getDialogPane().getContent();
+
+            setTextInTextControl(content,"#name",drugs.get(indexSelectElement).getName());
+            setTextInTextControl(content,"#releaseForm",drugs.get(indexSelectElement).getReleaseForm());
+            setTextInTextControl(content,"#manufacturer",drugs.get(indexSelectElement).getManufacturer());
+            setTextInTextControl(content,"#activeIngredient",drugs.get(indexSelectElement).getActiveIngredient());
+            setTextInTextControl(content,"#description",drugs.get(indexSelectElement).getDescription());
+            setSelectInSelectorControl(content,"#pEffectSelector",
+                    drugs.get(indexSelectElement).getPharmachologicEffect(),pharmachologicEffects);
+            setSelectInSelectorControl(content,"#tEffectSelector",
+                    drugs.get(indexSelectElement).getTherapeuticEffect(),therapeuticEffects);
+
+
+            Optional<DrugEntity> result = dialog.showAndWait();
+
+            result.ifPresent(drugEntity -> {
+                EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(result.get(), Event.UPDATE_DRUG);
+                selectListener.actionPerfomed(eo);
+            });
+        }else{
+            displayError("Выберите запись.");
+        }
+
+
+    }
+
+
 
     public void addPharmacologicEffect(){
         Dialog<PharmachologicEffectEntity> dialog = new Dialog<>();
@@ -524,5 +454,146 @@ public class ViewFX implements View, Initializable {
                 });
 
         tableDrugstores.getColumns().addAll(nameCol, districtCol, addressCol, phoneCol, hoursCol, boolCol);
+    }
+
+    private Dialog<DrugEntity> createDrugDialog(){
+        Dialog<DrugEntity> dialog = new Dialog<>();
+        dialog.setTitle("Новый препарат");
+        dialog.setHeaderText(null);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        TextField name = new TextField();
+        TextField releaseForm = new TextField();
+        TextField manufacturer = new TextField();
+        TextField activeIngredient = new TextField();
+        TextArea description = new TextArea();
+        description.setPrefWidth(350);
+
+        ListView<PharmachologicEffectEntity> pEffectSelector = new ListView<>();
+        pEffectSelector.setPrefSize(300, 100);
+
+        pEffectSelector.setCellFactory(
+                new Callback<ListView<PharmachologicEffectEntity>, ListCell<PharmachologicEffectEntity>>(){
+                    @Override
+                    public ListCell<PharmachologicEffectEntity> call(ListView<PharmachologicEffectEntity> param) {
+
+                        return new ListCell<PharmachologicEffectEntity>(){
+                            @Override
+                            public void updateItem(PharmachologicEffectEntity item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if(item != null) {
+                                    setText(item.getName());
+                                } else {
+                                    setText(null);
+                                }
+                            }
+
+                        };
+                    }
+                });
+
+        pEffectSelector.getItems().addAll(pharmachologicEffects);
+
+        Button addPEffectBtn = new Button("Добавить...");
+        addPEffectBtn.setOnAction(event -> {
+            addPharmacologicEffect();
+            pEffectSelector.getItems().clear();
+            pEffectSelector.getItems().addAll(pharmachologicEffects);
+        });
+
+        ListView<TherapeuticEffectEntity> tEffectSelector = new ListView<>();
+        tEffectSelector.setPrefSize(300, 100);
+
+        tEffectSelector.setCellFactory(
+                new Callback<ListView<TherapeuticEffectEntity>, ListCell<TherapeuticEffectEntity>>(){
+                    @Override
+                    public ListCell<TherapeuticEffectEntity> call(ListView<TherapeuticEffectEntity> param) {
+
+                        return new ListCell<TherapeuticEffectEntity>(){
+                            @Override
+                            public void updateItem(TherapeuticEffectEntity item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if(item != null) {
+                                    setText(String.format("%s: %s", item.getName(), item.getDescription()));
+                                } else {
+                                    setText(null);
+                                }
+                            }
+
+                        };
+                    }
+                });
+
+        tEffectSelector.getItems().addAll(therapeuticEffects);
+
+        Button addTEffectBtn = new Button("Добавить...");
+        addTEffectBtn.setOnAction(event -> {
+            addTherapeuticEffect();
+            tEffectSelector.getItems().clear();
+            tEffectSelector.getItems().addAll(therapeuticEffects);
+        });
+
+        name.setId("name");
+        releaseForm.setId("releaseForm");
+        manufacturer.setId("manufacturer");
+        activeIngredient.setId("activeIngredient");
+        description.setId("description");
+        pEffectSelector.setId("pEffectSelector");
+        tEffectSelector.setId("tEffectSelector");
+
+        grid.add(new Label("Название:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.add(new Label("Форма выпуска:"), 0, 1);
+        grid.add(releaseForm, 1, 1);
+        grid.add(new Label("Производитель:"), 0, 2);
+        grid.add(manufacturer, 1, 2);
+        grid.add(new Label("Активный ингредиент:"), 0, 3);
+        grid.add(activeIngredient, 1, 3);
+        grid.add(new Label("Фармакологический эффект:"), 0, 4);
+        grid.add(new HBox(5, pEffectSelector, addPEffectBtn), 1, 4);
+        grid.add(new Label("Терапевтический эффект:"), 0, 5);
+        grid.add(new HBox(5, tEffectSelector, addTEffectBtn), 1, 5);
+        grid.add(new Label("Описание:"), 0, 6);
+        grid.add(description, 1, 6);
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                if (!name.getText().isEmpty() && !releaseForm.getText().isEmpty() && !manufacturer.getText().isEmpty()
+                        && !activeIngredient.getText().isEmpty() && !pEffectSelector.getSelectionModel().isEmpty()
+                        && !tEffectSelector.getSelectionModel().isEmpty()) {
+                    return new DrugEntity(name.getText(), releaseForm.getText(), manufacturer.getText(),
+                            activeIngredient.getText(), pEffectSelector.getSelectionModel().getSelectedItem(),
+                            tEffectSelector.getSelectionModel().getSelectedItem(), description.getText());
+                }
+            }
+            return null;
+        });
+
+        return dialog;
+    }
+
+    private void setTextInTextControl(Node node, String id, String text){
+        Node element = node.getScene().lookup(id);
+        if(element instanceof TextInputControl){
+            ((TextInputControl) element).setText(text);
+        }
+    }
+
+    private void setSelectInSelectorControl(Node node, String id, Object entity, List listEntity){
+        Node element = node.getScene().lookup(id);
+        if(element instanceof ListView){
+            //TODO: подумать над этим
+            for (int i=0; i<listEntity.size(); i++) {
+                if(listEntity.get(i).equals(entity)){
+                    ((ListView) element).getSelectionModel().select(i);
+                }
+            }
+        }
     }
 }
