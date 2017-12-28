@@ -225,7 +225,8 @@ public class ViewFX implements View, Initializable {
         Button addPEffectBtn = new Button("Добавить...");
         addPEffectBtn.setOnAction(event -> {
             addPharmacologicEffect();
-            selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_P_EFFECTS));
+            pEffectSelector.getItems().clear();
+            pEffectSelector.getItems().addAll(pharmachologicEffects);
         });
 
         ListView<TherapeuticEffectEntity> tEffectSelector = new ListView<>();
@@ -256,7 +257,8 @@ public class ViewFX implements View, Initializable {
         Button addTEffectBtn = new Button("Добавить...");
         addTEffectBtn.setOnAction(event -> {
             addTherapeuticEffect();
-            selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_T_EFFECTS));
+            tEffectSelector.getItems().clear();
+            tEffectSelector.getItems().addAll(therapeuticEffects);
         });
 
         grid.add(new Label("Название:"), 0, 0);
@@ -332,7 +334,7 @@ public class ViewFX implements View, Initializable {
         result.ifPresent(pharmachologicEffectEntity -> {
             EventObjectImpl<PharmachologicEffectEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_P_EFFECT);
             selectListener.actionPerfomed(eo);
-            selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_P_EFFECTS));
+            selectListener.actionPerfomed(new EventObjectImpl<Object>(null, Event.GET_ALL_P_EFFECTS));
         });
     }
 
@@ -370,7 +372,7 @@ public class ViewFX implements View, Initializable {
         result.ifPresent(therapeuticEffectEntity -> {
             EventObjectImpl<TherapeuticEffectEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_T_EFFECT);
             selectListener.actionPerfomed(eo);
-            selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_T_EFFECTS));
+            selectListener.actionPerfomed(new EventObjectImpl<Object>(null, Event.GET_ALL_T_EFFECTS));
         });
     }
 

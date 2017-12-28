@@ -1,6 +1,6 @@
 package model.dao;
 
-import model.Connector;
+import model.HibernateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.ReplicationMode;
 import org.hibernate.Session;
@@ -12,7 +12,7 @@ public abstract class DAO<T> {
     public void replicate(T entity) throws DAOException{
         Session session = null;
         try{
-            session = Connector.getSesion();
+            session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             session.replicate(entity, ReplicationMode.EXCEPTION);
             session.getTransaction().commit();
@@ -28,7 +28,7 @@ public abstract class DAO<T> {
     public void add(T entity) throws DAOException {
         Session session = null;
         try{
-            session = Connector.getSesion();
+            session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             session.save(entity);
             session.getTransaction().commit();
@@ -44,7 +44,7 @@ public abstract class DAO<T> {
     public void update(T entity) throws DAOException {
         Session session = null;
         try{
-            session = Connector.getSesion();
+            session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             session.update(entity);
             session.getTransaction().commit();
@@ -61,7 +61,7 @@ public abstract class DAO<T> {
         Session session = null;
         T entity;
         try{
-            session = Connector.getSesion();
+            session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             entity = session.load(clazz,id);
             session.getTransaction().commit();
@@ -79,7 +79,7 @@ public abstract class DAO<T> {
         Session session = null;
         List<T> entities;
         try{
-            session = Connector.getSesion();
+            session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             Criteria criteria = session.createCriteria(clazz);
             entities = criteria.list();
@@ -97,7 +97,7 @@ public abstract class DAO<T> {
     public void delete(T entity) throws DAOException {
         Session session = null;
         try{
-            session = Connector.getSesion();
+            session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             session.delete(entity);
             session.getTransaction().commit();
