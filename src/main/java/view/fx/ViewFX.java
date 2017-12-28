@@ -195,6 +195,7 @@ public class ViewFX implements View, Initializable {
         });
     }
 
+    @FXML
     public void updateDrug(){
 
         int indexSelectElement = tableDrugs.getSelectionModel().getSelectedIndex();
@@ -214,23 +215,18 @@ public class ViewFX implements View, Initializable {
             setSelectInSelectorControl(content,"#tEffectSelector",
                     drugs.get(indexSelectElement).getTherapeuticEffect(),therapeuticEffects);
 
-
             Optional<DrugEntity> result = dialog.showAndWait();
 
             result.ifPresent(drugEntity -> {
                 DrugEntity drug = result.get();
                 drug.setId(drugs.get(indexSelectElement).getId());
-                EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(result.get(), Event.UPDATE_DRUG);
+                EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(drug, Event.UPDATE_DRUG);
                 selectListener.actionPerfomed(eo);
             });
         }else{
             displayError("Выберите строку");
         }
-
-
     }
-
-
 
     public void addPharmacologicEffect(){
         Dialog<PharmachologicEffectEntity> dialog = new Dialog<>();
@@ -310,51 +306,8 @@ public class ViewFX implements View, Initializable {
 
     @FXML
     public void addDrugstore() {
-        Dialog<DrugstoreEntity> dialog = new Dialog<>();
-        dialog.setTitle("Новая аптека");
-        dialog.setHeaderText(null);
 
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-
-        TextField name = new TextField();
-        TextField district = new TextField();
-        TextField street = new TextField();
-        TextField building = new TextField();
-        TextField phone = new TextField();
-        TextField hours = new TextField();
-        CheckBox isRoundTheClock = new CheckBox();
-
-        grid.add(new Label("Название:"), 0, 0);
-        grid.add(name, 1, 0);
-        grid.add(new Label("Район:"), 0, 1);
-        grid.add(district, 1, 1);
-        grid.add(new Label("Улица:"), 0, 2);
-        grid.add(street, 1, 2);
-        grid.add(new Label("Дом:"), 0, 3);
-        grid.add(building, 1, 3);
-        grid.add(new Label("Телефон:"), 0, 4);
-        grid.add(phone, 1, 4);
-        grid.add(new Label("Часы работы:"), 0, 5);
-        grid.add(hours, 1, 5);
-        grid.add(new Label("Крулосуточная:"), 0, 6);
-        grid.add(isRoundTheClock, 1, 6);
-
-        dialog.getDialogPane().setContent(grid);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == ButtonType.OK) {
-                if (!name.getText().isEmpty() && !district.getText().isEmpty() && !street.getText().isEmpty()
-                        && !building.getText().isEmpty() && !phone.getText().isEmpty() && !hours.getText().isEmpty()) {
-                    return new DrugstoreEntity(name.getText(), district.getText(), street.getText(), building.getText(),
-                            Long.valueOf(phone.getText()), hours.getText(),
-                            (short)(isRoundTheClock.isSelected() ? 1 : 0));
-                }
-            }
-            return null;
-        });
+        Dialog<DrugstoreEntity> dialog = createDrugstoreDialog();
 
         Optional<DrugstoreEntity> result = dialog.showAndWait();
 
@@ -362,6 +315,37 @@ public class ViewFX implements View, Initializable {
             EventObjectImpl<DrugstoreEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_DRUGSTORE);
             selectListener.actionPerfomed(eo);
         });
+    }
+
+    @FXML
+    public void updateDrugstore(){
+
+        int indexSelectElement = tableDrugstores.getSelectionModel().getSelectedIndex();
+
+        if(indexSelectElement!=-1){
+            Dialog<DrugstoreEntity> dialog = createDrugstoreDialog();
+
+            Node content = dialog.getDialogPane().getContent();
+
+            setTextInTextControl(content,"#name",drugstores.get(indexSelectElement).getName());
+            setTextInTextControl(content,"#district",drugstores.get(indexSelectElement).getDistrict());
+            setTextInTextControl(content,"#street",drugstores.get(indexSelectElement).getStreet());
+            setTextInTextControl(content,"#building",drugstores.get(indexSelectElement).getBuilding());
+            setTextInTextControl(content,"#phone", String.valueOf(drugstores.get(indexSelectElement).getPhone()));
+            setTextInTextControl(content,"#hours",drugstores.get(indexSelectElement).getWorkingHours());
+            setBooleanInCheckbox(content,"#isRoundTheClock", drugstores.get(indexSelectElement).getIsRoundTheClock()!=0);
+
+            Optional<DrugstoreEntity> result = dialog.showAndWait();
+
+            result.ifPresent(drugstoreEntity -> {
+                DrugstoreEntity drugstore = result.get();
+                drugstore.setId(drugstores.get(indexSelectElement).getId());
+                EventObjectImpl<DrugstoreEntity> eo = new EventObjectImpl<>(drugstore, Event.UPDATE_DRUGSTORE);
+                selectListener.actionPerfomed(eo);
+            });
+        }else{
+            displayError("Выберите строку");
+        }
     }
 
     @FXML
@@ -580,10 +564,75 @@ public class ViewFX implements View, Initializable {
         return dialog;
     }
 
+    private Dialog<DrugstoreEntity> createDrugstoreDialog(){
+        Dialog<DrugstoreEntity> dialog = new Dialog<>();
+        dialog.setTitle("Новая аптека");
+        dialog.setHeaderText(null);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        TextField name = new TextField();
+        TextField district = new TextField();
+        TextField street = new TextField();
+        TextField building = new TextField();
+        TextField phone = new TextField();
+        TextField hours = new TextField();
+        CheckBox isRoundTheClock = new CheckBox();
+
+        name.setId("name");
+        district.setId("district");
+        street.setId("street");
+        building.setId("building");
+        phone.setId("phone");
+        hours.setId("hours");
+        isRoundTheClock.setId("isRoundTheClock");
+
+        grid.add(new Label("Название:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.add(new Label("Район:"), 0, 1);
+        grid.add(district, 1, 1);
+        grid.add(new Label("Улица:"), 0, 2);
+        grid.add(street, 1, 2);
+        grid.add(new Label("Дом:"), 0, 3);
+        grid.add(building, 1, 3);
+        grid.add(new Label("Телефон:"), 0, 4);
+        grid.add(phone, 1, 4);
+        grid.add(new Label("Часы работы:"), 0, 5);
+        grid.add(hours, 1, 5);
+        grid.add(new Label("Крулосуточная:"), 0, 6);
+        grid.add(isRoundTheClock, 1, 6);
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                if (!name.getText().isEmpty() && !district.getText().isEmpty() && !street.getText().isEmpty()
+                        && !building.getText().isEmpty() && !phone.getText().isEmpty() && !hours.getText().isEmpty()) {
+                    return new DrugstoreEntity(name.getText(), district.getText(), street.getText(), building.getText(),
+                            Long.valueOf(phone.getText()), hours.getText(),
+                            (short)(isRoundTheClock.isSelected() ? 1 : 0));
+                }
+            }
+            return null;
+        });
+
+        return dialog;
+    }
+
     private void setTextInTextControl(Node node, String id, String text){
         Node element = node.getScene().lookup(id);
         if(element instanceof TextInputControl){
             ((TextInputControl) element).setText(text);
+        }
+    }
+
+    private void setBooleanInCheckbox(Node node, String id, Boolean value){
+        Node element = node.getScene().lookup(id);
+        if(element instanceof CheckBox){
+            ((CheckBox) element).setSelected(value);
         }
     }
 

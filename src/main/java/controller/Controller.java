@@ -68,6 +68,8 @@ public class Controller implements UserRequestSelectListener {
                     view.displayDrugstores(drugstoreDAO.getAll());
                     break;
                 case UPDATE_DRUGSTORE:
+                    drugstoreDAO.update((DrugstoreEntity) eo.getEventSource());
+                    view.displayDrugstores(drugstoreDAO.getAll());
                     break;
                 case ADD_P_EFFECT:
                     pEffectDAO.add((PharmachologicEffectEntity) eo.getEventSource());
