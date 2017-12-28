@@ -218,11 +218,13 @@ public class ViewFX implements View, Initializable {
             Optional<DrugEntity> result = dialog.showAndWait();
 
             result.ifPresent(drugEntity -> {
+                DrugEntity drug = result.get();
+                drug.setId(drugs.get(indexSelectElement).getId());
                 EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(result.get(), Event.UPDATE_DRUG);
                 selectListener.actionPerfomed(eo);
             });
         }else{
-            displayError("Выберите запись.");
+            displayError("Выберите строку");
         }
 
 
