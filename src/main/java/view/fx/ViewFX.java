@@ -416,6 +416,7 @@ public class ViewFX implements View, Initializable {
         try {
             root = loader.load();
             Stage exportWindow = new Stage();
+            ExportWindowController.STAGE = exportWindow;
             exportWindow.setScene(new Scene(root));
             exportWindow.initModality(Modality.WINDOW_MODAL);
             exportWindow.initOwner(stage);

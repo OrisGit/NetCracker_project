@@ -16,15 +16,15 @@
 <AnchorPane prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.fx.ViewFX">
    <MenuBar prefHeight="25.0" prefWidth="700.0" AnchorPane.bottomAnchor="375.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
      <menus>
-       <Menu mnemonicParsing="false" text="File">
+       <Menu mnemonicParsing="false" text="Файл">
          <items>
-           <MenuItem mnemonicParsing="false" text="Import" />
-               <MenuItem mnemonicParsing="false" onAction="#showExportWindow" text="Export" />
+           <MenuItem mnemonicParsing="false" text="Импорт" />
+               <MenuItem mnemonicParsing="false" onAction="#showExportWindow" text="Экспорт" />
          </items>
        </Menu>
-       <Menu mnemonicParsing="false" text="Help">
+       <Menu mnemonicParsing="false" text="Помощь">
          <items>
-           <MenuItem mnemonicParsing="false" text="About" />
+           <MenuItem mnemonicParsing="false" text="О нас" />
          </items>
        </Menu>
      </menus>
