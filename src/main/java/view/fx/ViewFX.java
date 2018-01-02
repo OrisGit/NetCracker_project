@@ -136,50 +136,6 @@ public class ViewFX implements View, Initializable {
         selectListener.actionPerfomed(eo);
     }
 
-    @FXML
-    public void exportToJSON() {
-        ExportManager<TherapeuticEffectEntity> exportManager = new JsonExportManager<>(true);
-        TEffectDAO daoManager = new TEffectDAOImpl();
-        //TODO проверить файл
-        File file = new File("E:/export.json");
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            exportManager.exportToFile("E:/export.json", daoManager.getAll());
-        } catch (ExportException e) {
-            e.printStackTrace();
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    public void exportToXML() {
-        ExportManager<TherapeuticEffectEntity> exportManager = new XmlExportManager<>(TherapeuticEffectEntity.class, true);
-        TEffectDAO daoManager = new TEffectDAOImpl();
-        //TODO проверить файл
-        File file = new File("E:/export.xml");
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            exportManager.exportToFile("E:/export.xml", daoManager.getAll());
-        } catch (ExportException e) {
-            e.printStackTrace();
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void addPharmacologicEffect() {
         Dialog<PharmachologicEffectEntity> dialog = new Dialog<>();
         dialog.setTitle("Новый фармакологический эффект");
@@ -422,6 +378,25 @@ public class ViewFX implements View, Initializable {
             exportWindow.initOwner(stage);
             exportWindow.setTitle("Экспорт");
             exportWindow.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void showImportWindow() {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/import_window.fxml"));
+        Parent root;
+        try {
+            root = loader.load();
+            Stage importWindow = new Stage();
+            ExportWindowController.STAGE = importWindow;
+            importWindow.setScene(new Scene(root));
+            importWindow.initModality(Modality.WINDOW_MODAL);
+            importWindow.initOwner(stage);
+            importWindow.setTitle("Импорт");
+            importWindow.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
