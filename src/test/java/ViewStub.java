@@ -1,12 +1,10 @@
-import Event.ActionListener;
-import Event.*;
-import Event.EventObject;
-import Event.EventObjectImpl;
-import Model.Entities.DrugEntity;
-import Model.Entities.DrugstoreEntity;
-import Prameters.Parameters;
-import Prameters.ParametersBuilder;
-import View.View;
+import event.*;
+import event.EventObject;
+import event.EventObjectImpl;
+import model.entities.*;
+import parameters.Parameters;
+import parameters.ParametersBuilder;
+import view.View;
 
 import java.util.List;
 import java.util.Scanner;
@@ -15,12 +13,11 @@ public class ViewStub implements View{
 
     Scanner sc = new Scanner(System.in);
 
-    ActionListener actionListener;
+    UserRequestSelectListener userRequestSelectListener;
 
-    @Override
-    public void setActionListener(ActionListener actionListener) {
-        if(actionListener!=null){
-            this.actionListener = actionListener;
+    public void setUserRequestSelectListener(UserRequestSelectListener userRequestSelectListener) {
+        if(userRequestSelectListener !=null){
+            this.userRequestSelectListener = userRequestSelectListener;
         }
     }
 
@@ -30,8 +27,23 @@ public class ViewStub implements View{
     }
 
     @Override
-    public void displayPharmacies(List<DrugstoreEntity> drugstores) {
+    public void displayDrugstores(List<DrugstoreEntity> drugstores) {
         drugstores.forEach(System.out::println);
+    }
+
+    @Override
+    public void displayPrices(List<PriceEntity> prices) {
+
+    }
+
+    @Override
+    public void displayPharmacologicEffects(List<PharmachologicEffectEntity> pharmachologicEffects) {
+        pharmachologicEffects.forEach(System.out::println);
+    }
+
+    @Override
+    public void displayTherapeuticEffects(List<TherapeuticEffectEntity> therapeuticEffects) {
+        therapeuticEffects.forEach(System.out::println);
     }
 
     @Override
@@ -45,13 +57,13 @@ public class ViewStub implements View{
         if(sc.next().equals("1")){
             ParametersBuilder builder = new ParametersBuilder();
             Parameters parameters = builder.createParameters();
-            EventObject eventObject = new EventObjectImpl(parameters,Event.GET_ALL_DRUGSTORE);
-            actionListener.actionPerfomed(eventObject);
+            EventObject eventObject = new EventObjectImpl(parameters,Event.GET_ALL_DRUGSTORES);
+            userRequestSelectListener.actionPerfomed(eventObject);
         }else{
             ParametersBuilder builder = new ParametersBuilder();
             Parameters parameters = builder.createParameters();
             EventObject eventObject = new EventObjectImpl(parameters,Event.GET_ALL_DRUGS);
-            actionListener.actionPerfomed(eventObject);
+            userRequestSelectListener.actionPerfomed(eventObject);
         }
     }
 }
