@@ -1,48 +1,58 @@
-import com.google.gson.reflect.TypeToken;
 import model.dao.*;
-import model.entities.DrugEntity;
-import model.entities.PharmachologicEffectEntity;
-import model.entities.PriceEntity;
-import model.entities.TherapeuticEffectEntity;
 import model.import_export.*;
-import model.interfaces.DrugDAO;
-import model.interfaces.PEffectDAO;
-import model.interfaces.PriceDAO;
-import model.interfaces.TEffectDAO;
+import model.import_export.marshalling.*;
+import model.interfaces.*;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.nio.file.Files;
 
 public class ImportExportTest {
-    public static void main(String[] args) throws DAOException, ExportException, ImportException {
-        XmlImport();
+    public static void main(String[] args) throws DAOException, MarshallingException, UnmarshallingException, ExportException, IOException, ImportException {
+        File file = new File("E:/Temp/exit.xml");
+//        String str = Exporter.export(FormatType.XML,true);
+//        FileWriter fileWriter = new FileWriter(file);
+//        fileWriter.write(str);
+//        fileWriter.flush();
+//        fileWriter.close();
+
+        FileReader fileReader = new FileReader(file);
+        byte[] bytes = Files.readAllBytes(file.toPath());
+        Importer._import(new String(bytes,"UTF-8"),FormatType.XML);
     }
 
-    public static void XmlImport() throws ImportException {
-        XmlImportManager<DrugEntity> xmlImportManager = new XmlImportManager<>(new DrugDAOImpl(),DrugEntity.class);
-        xmlImportManager.importFromFile("E:/Temp/exit.xml");
+    public static void XmlImport() throws UnmarshallingException {
+        AbstractUnmarshaller xmlImportManager = new XmlUnmarshaller();
+        EntityWrapper entityWrapper = xmlImportManager.importFromFile("E:/Temp/exit.xml");
     }
 
-    public static void XmlExport() throws DAOException, ExportException {
-        ExportManager<DrugEntity> em = new XmlExportManager<>(DrugEntity.class, true);
+    public static void XmlExport() throws DAOException, MarshallingException {
+        AbstractMarshaller exporter = new XmlMarshaller(true);
+
+        exporter.exportToFile("E:/Temp/exit.xml",getWrapper());
+    }
+
+    private static EntityWrapper getWrapper() throws DAOException, MarshallingException {
         DrugDAO drugDAO = new DrugDAOImpl();
-        List<DrugEntity> therapeuticEffectEntities = drugDAO.getAll();
-        em.exportToFile("E:/Temp/exit.xml",therapeuticEffectEntities);
-    }
-
-    public static void JsonImport() throws ImportException {
-        ImportManager<TherapeuticEffectEntity> im = new JsonImportManager<>(new TEffectDAOImpl(), TherapeuticEffectEntity[].class);
-        im.importFromFile("E:/Temp/exit.json");
-    }
-
-    public static void JsonExport() throws ExportException, DAOException {
-        JsonExportManager<TherapeuticEffectEntity> em = new JsonExportManager<>(true);
+        DrugstoreDAO drugstoreDAO = new DrugstoreDAOImpl();
         TEffectDAO tEffectDAO = new TEffectDAOImpl();
-        List<TherapeuticEffectEntity> priceEntities = tEffectDAO.getAll();
-        em.exportToFile("E:/Temp/exit.json", priceEntities);
-        System.out.println(em.exportToString(priceEntities));
+        PEffectDAO pEffectDAO = new PEffectDAOImpl();
+        PriceDAO priceDAO = new PriceDAOImpl();
+
+        EntityWrapper wrapper = new EntityWrapper(pEffectDAO.getAll(),tEffectDAO.getAll(),drugstoreDAO.getAll(),drugDAO.getAll(),priceDAO.getAll());
+        return wrapper;
+    }
+
+    public static void JsonImport() throws UnmarshallingException {
+        AbstractUnmarshaller im = new JsonUnmarshaller();
+        EntityWrapper entityWrapper = im.importFromFile("E:/Temp/exit.json");
+        entityWrapper.getDrugs();
+    }
+
+    public static void JsonExport() throws MarshallingException, DAOException {
+        AbstractMarshaller exporter = new JsonMarshaller(true);
+        exporter.exportToFile("E:/Temp/exit.json", getWrapper());
     }
 }

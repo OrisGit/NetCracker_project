@@ -17,17 +17,9 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import model.dao.DAOException;
-import model.dao.TEffectDAOImpl;
 import model.entities.*;
-import model.import_export.ExportException;
-import model.import_export.ExportManager;
-import model.import_export.JsonExportManager;
-import model.import_export.XmlExportManager;
-import model.interfaces.TEffectDAO;
 import view.View;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;

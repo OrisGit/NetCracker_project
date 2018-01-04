@@ -8,12 +8,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import model.dao.*;
-import model.entities.*;
-import model.import_export.ExportException;
-import model.import_export.ExportManager;
-import model.import_export.ExportManagerFactory;
+import model.import_export.marshalling.MarshallingException;
 import model.import_export.FormatType;
-import org.hibernate.tool.hbm2ddl.SchemaExportTask;
 
 
 import java.io.File;
@@ -58,7 +54,7 @@ public class ExportWindowController implements Initializable{
    }
 
    @FXML
-   public void clickExportBtn() throws DAOException, ExportException {
+   public void clickExportBtn() throws DAOException, MarshallingException {
 
        if(text_path.getText().equals("Пожалуйста выберите путь")){
            clickPathSelectBtn();
@@ -67,35 +63,35 @@ public class ExportWindowController implements Initializable{
 
        List listEntity = null;
 
-       ExportManagerFactory ef = null;
-       String fileName = null;
-       switch (table_chosser.getSelectionModel().getSelectedItem()){
-           case "Препараты":
-               ef = new ExportManagerFactory<DrugEntity>(new DrugEntity());
-               fileName = "drugs";
-               listEntity = new DrugDAOImpl().getAll();
-               break;
-           case "Аптеки":
-               ef = new ExportManagerFactory<DrugstoreEntity>(new DrugstoreEntity());
-               fileName = "drugstores";
-               listEntity = new DrugstoreDAOImpl().getAll();
-               break;
-           case "Терапевтические эффекты":
-               ef = new ExportManagerFactory<TherapeuticEffectEntity>(new TherapeuticEffectEntity());
-               fileName = "TherapeuticEffects";
-               listEntity = new TEffectDAOImpl().getAll();
-               break;
-           case "Фармакологические эффекты":
-               ef = new ExportManagerFactory<PharmachologicEffectEntity>(new PharmachologicEffectEntity());
-               fileName = "PharmachologicEffects";
-               listEntity = new PEffectDAOImpl().getAll();
-               break;
-           case "Прайс лист":
-               ef = new ExportManagerFactory<PriceEntity>(new PriceEntity());
-               fileName = "Price";
-               listEntity = new PriceDAOImpl().getAll();
-               break;
-       }
+//       ExportManagerFactory ef = null;
+//       String fileName = null;
+//       switch (table_chosser.getSelectionModel().getSelectedItem()){
+//           case "Препараты":
+//               ef = new ExportManagerFactory<DrugEntity>(new DrugEntity());
+//               fileName = "drugs";
+//               listEntity = new DrugDAOImpl().getAll();
+//               break;
+//           case "Аптеки":
+//               ef = new ExportManagerFactory<DrugstoreEntity>(new DrugstoreEntity());
+//               fileName = "drugstores";
+//               listEntity = new DrugstoreDAOImpl().getAll();
+//               break;
+//           case "Терапевтические эффекты":
+//               ef = new ExportManagerFactory<TherapeuticEffectEntity>(new TherapeuticEffectEntity());
+//               fileName = "TherapeuticEffects";
+//               listEntity = new TEffectDAOImpl().getAll();
+//               break;
+//           case "Фармакологические эффекты":
+//               ef = new ExportManagerFactory<PharmachologicEffectEntity>(new PharmachologicEffectEntity());
+//               fileName = "PharmachologicEffects";
+//               listEntity = new PEffectDAOImpl().getAll();
+//               break;
+//           case "Прайс лист":
+//               ef = new ExportManagerFactory<PriceEntity>(new PriceEntity());
+//               fileName = "Price";
+//               listEntity = new PriceDAOImpl().getAll();
+//               break;
+//       }
 
        String fileExt;
        FormatType type;
@@ -107,9 +103,9 @@ public class ExportWindowController implements Initializable{
            fileExt = ".xml";
        }
 
-       ExportManager em = ef.getExportManager(type,true);
-
-       em.exportToFile(String.format("%s\\%s%s",path.getAbsolutePath(),fileName,fileExt),listEntity);
+//       AbstractMarshaller em = ef.getExportManager(type,true);
+//
+//       em.exportToFile(String.format("%s\\%s%s",path.getAbsolutePath(),fileName,fileExt),listEntity);
        STAGE.close();
    }
 }

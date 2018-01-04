@@ -1,18 +1,14 @@
 package view.fx;
 
-import com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.dao.DrugDAOImpl;
-import model.entities.DrugEntity;
 import model.import_export.FormatType;
-import model.import_export.ImportException;
-import model.import_export.ImportManager;
-import model.import_export.XmlImportManager;
+import model.import_export.marshalling.UnmarshallingException;
+import model.import_export.marshalling.AbstractUnmarshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -20,7 +16,6 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -49,12 +44,12 @@ public class ImportWindowController implements Initializable {
     }
 
     @FXML
-    public void clickImportBtn() throws ImportException {
-        ImportManager importManager = null;
+    public void clickImportBtn() throws UnmarshallingException {
+        AbstractUnmarshaller abstractUnmarshaller = null;
         if(getFileExtension(file).toLowerCase().equals("ajax")){
 
         }else if(getFileExtension(file).toLowerCase().equals("xml")){
-            importManager = getImportManager(FormatType.XML);
+            abstractUnmarshaller = getImportManager(FormatType.XML);
         }else{
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Ошибка");
@@ -62,10 +57,10 @@ public class ImportWindowController implements Initializable {
             alert.setContentText("Не верное расширение файла");
             alert.show();
         }
-        importManager.importFromFile(file.getAbsolutePath());
+        ///abstractUnmarshaller.importFromFile(file.getAbsolutePath());
     }
 
-    private ImportManager getImportManager(FormatType type){
+    private AbstractUnmarshaller getImportManager(FormatType type){
         String tableType = null;
         if(type.equals(FormatType.XML)){
             try {
@@ -83,10 +78,10 @@ public class ImportWindowController implements Initializable {
             //TODO дописать
         }
 
-        switch (tableType){
-            case "drugEntity":
-                return new XmlImportManager<DrugEntity>(new DrugDAOImpl(), DrugEntity.class);
-        }
+//        switch (tableType){
+//            case "drugEntity":
+//                return new XmlUnmarshaller<DrugEntity>(new DrugDAOImpl(), DrugEntity.class);
+//        }
 
         return null;
     }
