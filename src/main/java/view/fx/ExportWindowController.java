@@ -1,5 +1,9 @@
 package view.fx;
 
+import event.Event;
+import event.EventObject;
+import event.EventObjectImpl;
+import event.UserRequestSelectListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -10,35 +14,26 @@ import javafx.stage.Stage;
 import model.dao.*;
 import model.import_export.marshalling.MarshallingException;
 import model.import_export.FormatType;
+import view.View;
 
 
 import java.io.File;
 import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ExportWindowController implements Initializable{
 
     static Stage STAGE;
+    static UserRequestSelectListener LISTENER;
     private File path;
 
     @FXML
     public TextField text_path;
     @FXML
-    public ComboBox<String> table_chosser;
     public RadioButton rbtn_json;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        List<String> tables = new LinkedList<>();
-        tables.add("Препараты");
-        tables.add("Аптеки");
-        tables.add("Терапевтические эффекты");
-        tables.add("Фармакологические эффекты");
-        tables.add("Прайс лист");
-        table_chosser.getItems().addAll(tables);
-        table_chosser.getSelectionModel().select(0);
         text_path.setText("Пожалуйста выберите путь");
     }
 
@@ -61,38 +56,6 @@ public class ExportWindowController implements Initializable{
            return;
        }
 
-       List listEntity = null;
-
-//       ExportManagerFactory ef = null;
-//       String fileName = null;
-//       switch (table_chosser.getSelectionModel().getSelectedItem()){
-//           case "Препараты":
-//               ef = new ExportManagerFactory<DrugEntity>(new DrugEntity());
-//               fileName = "drugs";
-//               listEntity = new DrugDAOImpl().getAll();
-//               break;
-//           case "Аптеки":
-//               ef = new ExportManagerFactory<DrugstoreEntity>(new DrugstoreEntity());
-//               fileName = "drugstores";
-//               listEntity = new DrugstoreDAOImpl().getAll();
-//               break;
-//           case "Терапевтические эффекты":
-//               ef = new ExportManagerFactory<TherapeuticEffectEntity>(new TherapeuticEffectEntity());
-//               fileName = "TherapeuticEffects";
-//               listEntity = new TEffectDAOImpl().getAll();
-//               break;
-//           case "Фармакологические эффекты":
-//               ef = new ExportManagerFactory<PharmachologicEffectEntity>(new PharmachologicEffectEntity());
-//               fileName = "PharmachologicEffects";
-//               listEntity = new PEffectDAOImpl().getAll();
-//               break;
-//           case "Прайс лист":
-//               ef = new ExportManagerFactory<PriceEntity>(new PriceEntity());
-//               fileName = "Price";
-//               listEntity = new PriceDAOImpl().getAll();
-//               break;
-//       }
-
        String fileExt;
        FormatType type;
        if(rbtn_json.isSelected()){
@@ -103,9 +66,14 @@ public class ExportWindowController implements Initializable{
            fileExt = ".xml";
        }
 
-//       AbstractMarshaller em = ef.getExportManager(type,true);
-//
-//       em.exportToFile(String.format("%s\\%s%s",path.getAbsolutePath(),fileName,fileExt),listEntity);
+       String path = String.format("%s\\%s%s",this.path.getAbsolutePath(),"export_data",fileExt);
+
+       Map<String,Object> prop = new HashMap<>();
+       prop.put("path", path);
+       prop.put("type", type);
+       EventObject<Map<String,Object>> eventObject = new EventObjectImpl<>(prop, Event.EXPORT);
+       LISTENER.actionPerfomed(eventObject);
+
        STAGE.close();
    }
 }

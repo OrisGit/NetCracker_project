@@ -77,6 +77,11 @@ public class TextView implements View{
         System.out.println(message);
     }
 
+    @Override
+    public void export(String data, String path) {
+
+    }
+
     public void run() {
         System.out.println("Введите 1");
         if(sc.next().equals("1")){

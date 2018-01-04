@@ -52,6 +52,11 @@ public class ViewStub implements View{
     }
 
     @Override
+    public void export(String data, String path) {
+
+    }
+
+    @Override
     public void run() {
         System.out.println("Введите 1");
         if(sc.next().equals("1")){

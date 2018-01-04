@@ -1,5 +1,9 @@
 package view.fx;
 
+import event.Event;
+import event.EventObject;
+import event.EventObjectImpl;
+import event.UserRequestSelectListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -17,7 +21,12 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ImportWindowController implements Initializable {
@@ -25,7 +34,8 @@ public class ImportWindowController implements Initializable {
     @FXML
     public TextField text_path;
     private File file;
-    public static Stage STAGE;
+    static Stage STAGE;
+    static UserRequestSelectListener LISTENER;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -45,46 +55,43 @@ public class ImportWindowController implements Initializable {
 
     @FXML
     public void clickImportBtn() throws UnmarshallingException {
-        AbstractUnmarshaller abstractUnmarshaller = null;
-        if(getFileExtension(file).toLowerCase().equals("ajax")){
-
+        FormatType type;
+        if(getFileExtension(file).toLowerCase().equals("json")){
+            type = FormatType.JSON;
         }else if(getFileExtension(file).toLowerCase().equals("xml")){
-            abstractUnmarshaller = getImportManager(FormatType.XML);
+            type = FormatType.XML;
         }else{
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Ошибка");
             alert.setHeaderText(null);
             alert.setContentText("Не верное расширение файла");
             alert.show();
-        }
-        ///abstractUnmarshaller.importFromFile(file.getAbsolutePath());
-    }
-
-    private AbstractUnmarshaller getImportManager(FormatType type){
-        String tableType = null;
-        if(type.equals(FormatType.XML)){
-            try {
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db = dbf.newDocumentBuilder();
-                Document document = db.parse(file);
-                Element root = document.getDocumentElement();
-                NodeList children = root.getChildNodes();
-                Node child = root.getFirstChild();
-                tableType = child.getNodeName();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else{
-            //TODO дописать
+            return;
         }
 
-//        switch (tableType){
-//            case "drugEntity":
-//                return new XmlUnmarshaller<DrugEntity>(new DrugDAOImpl(), DrugEntity.class);
-//        }
+        byte[] bytes = null;
+        String data = null;
+        try {
+            bytes = Files.readAllBytes(file.toPath());
+            data = new String(bytes,"UTF-8");
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText(null);
+            alert.setContentText("Не возможно считать данные из файла");
+            alert.show();
+            return;
+        }
 
-        return null;
+        Map<String, Object> prop = new HashMap<>();
+        prop.put("data",data);
+        prop.put("type",type);
+
+        EventObject<Map<String,Object>> eo = new EventObjectImpl<>(prop, Event.IMPORT);
+        LISTENER.actionPerfomed(eo);
+        STAGE.close();
     }
+
 
     private String getFileExtension(File file) {
         String fileName = file.getName();

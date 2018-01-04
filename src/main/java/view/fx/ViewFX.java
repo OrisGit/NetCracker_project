@@ -18,8 +18,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.entities.*;
+import model.import_export.Importer;
 import view.View;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
@@ -28,7 +31,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ViewFX implements View, Initializable {
-    private static Stage stage;
+    private static Stage STAGE;
     @FXML
     private TableView tableDrugs;
     @FXML
@@ -43,7 +46,7 @@ public class ViewFX implements View, Initializable {
     private List<TherapeuticEffectEntity> therapeuticEffects;
 
     public static void setStage(Stage stage) {
-        ViewFX.stage = stage;
+        ViewFX.STAGE = stage;
     }
 
     @Override
@@ -101,6 +104,20 @@ public class ViewFX implements View, Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.show();
+    }
+
+    @Override
+    public void export(String data, String path) {
+        File file = new File(path);
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(file);
+            fileWriter.write(data);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            displayError("Ошибка записи экспортированных данных в файл по пути: "+path);
+        }
     }
 
     @Override
@@ -365,9 +382,10 @@ public class ViewFX implements View, Initializable {
             root = loader.load();
             Stage exportWindow = new Stage();
             ExportWindowController.STAGE = exportWindow;
+            ExportWindowController.LISTENER = selectListener;
             exportWindow.setScene(new Scene(root));
             exportWindow.initModality(Modality.WINDOW_MODAL);
-            exportWindow.initOwner(stage);
+            exportWindow.initOwner(STAGE);
             exportWindow.setTitle("Экспорт");
             exportWindow.show();
         } catch (IOException e) {
@@ -383,10 +401,11 @@ public class ViewFX implements View, Initializable {
         try {
             root = loader.load();
             Stage importWindow = new Stage();
-            ExportWindowController.STAGE = importWindow;
+            ImportWindowController.STAGE = importWindow;
+            ImportWindowController.LISTENER = selectListener;
             importWindow.setScene(new Scene(root));
             importWindow.initModality(Modality.WINDOW_MODAL);
-            importWindow.initOwner(stage);
+            importWindow.initOwner(STAGE);
             importWindow.setTitle("Импорт");
             importWindow.show();
         } catch (IOException e) {
