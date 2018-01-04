@@ -18,27 +18,33 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.entities.*;
-import model.import_export.Importer;
 import view.View;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class ViewFX implements View, Initializable {
-    private static Stage STAGE;
+public class ViewFX implements View, Initializable, Serializable {
+
+    transient private View stub;
+    transient private static Stage STAGE;
     @FXML
-    private TableView tableDrugs;
+    transient private TableView tableDrugs;
     @FXML
-    private TableView tableDrugstores;
+    transient private TableView tableDrugstores;
     @FXML
-    private TableView tablePrices;
-    private UserRequestSelectListener selectListener;
+    transient private TableView tablePrices;
+    transient private UserRequestSelectListener selectListener;
+
+
     private List<DrugEntity> drugs;
     private List<DrugstoreEntity> drugstores;
     private List<PriceEntity> prices;
@@ -125,24 +131,41 @@ public class ViewFX implements View, Initializable {
         showAllDrugs();
         showAllDrugstores();
         showAllPrices();
-        selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_P_EFFECTS));
-        selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_T_EFFECTS));
+        try {
+            selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_P_EFFECTS),stub);
+            selectListener.actionPerfomed(new EventObjectImpl(null, Event.GET_ALL_T_EFFECTS),stub);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
     public void showAllDrugs() {
         EventObjectImpl<Object> eo = new EventObjectImpl<>(null, Event.GET_ALL_DRUGS);
-        selectListener.actionPerfomed(eo);
+        try {
+            selectListener.actionPerfomed(eo,stub);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void showAllDrugstores() {
         EventObjectImpl<Object> eo = new EventObjectImpl<>(null, Event.GET_ALL_DRUGSTORES);
-        selectListener.actionPerfomed(eo);
+        try {
+            selectListener.actionPerfomed(eo,stub);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void showAllPrices() {
         EventObjectImpl<Object> eo = new EventObjectImpl<>(null, Event.GET_ALL_PRICES);
-        selectListener.actionPerfomed(eo);
+        try {
+            selectListener.actionPerfomed(eo,stub);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addPharmacologicEffect() {
@@ -178,8 +201,13 @@ public class ViewFX implements View, Initializable {
 
         result.ifPresent(pharmachologicEffectEntity -> {
             EventObjectImpl<PharmachologicEffectEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_P_EFFECT);
-            selectListener.actionPerfomed(eo);
-            selectListener.actionPerfomed(new EventObjectImpl<Object>(null, Event.GET_ALL_P_EFFECTS));
+            try {
+                selectListener.actionPerfomed(eo,stub);
+                selectListener.actionPerfomed(new EventObjectImpl<Object>(null, Event.GET_ALL_P_EFFECTS),stub);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
         });
     }
 
@@ -216,8 +244,13 @@ public class ViewFX implements View, Initializable {
 
         result.ifPresent(therapeuticEffectEntity -> {
             EventObjectImpl<TherapeuticEffectEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_T_EFFECT);
-            selectListener.actionPerfomed(eo);
-            selectListener.actionPerfomed(new EventObjectImpl<Object>(null, Event.GET_ALL_T_EFFECTS));
+            try {
+                selectListener.actionPerfomed(eo,stub);
+                selectListener.actionPerfomed(new EventObjectImpl<Object>(null, Event.GET_ALL_T_EFFECTS),stub);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
         });
     }
 
@@ -230,8 +263,13 @@ public class ViewFX implements View, Initializable {
 
         result.ifPresent(drugEntity -> {
             EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_DRUG);
-            selectListener.actionPerfomed(eo);
+            try {
+                selectListener.actionPerfomed(eo,stub);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         });
+        showAllDrugs();
     }
 
     @FXML
@@ -259,11 +297,16 @@ public class ViewFX implements View, Initializable {
                 DrugEntity drug = result.get();
                 drug.setId(drugs.get(indexSelectElement).getId());
                 EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(drug, Event.UPDATE_DRUG);
-                selectListener.actionPerfomed(eo);
+                try {
+                    selectListener.actionPerfomed(eo,stub);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             });
         } else {
             displayError("Выберите строку");
         }
+        showAllDrugs();
     }
 
     @FXML
@@ -271,8 +314,13 @@ public class ViewFX implements View, Initializable {
         int index = tableDrugs.getSelectionModel().getSelectedIndex();
         if (index != -1) {
             EventObjectImpl<DrugEntity> eo = new EventObjectImpl<>(drugs.get(index), Event.DELETE_DRUG);
-            selectListener.actionPerfomed(eo);
+            try {
+                selectListener.actionPerfomed(eo,stub);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
+        showAllDrugs();
     }
 
     @FXML
@@ -284,8 +332,13 @@ public class ViewFX implements View, Initializable {
 
         result.ifPresent(drugstoreEntity -> {
             EventObjectImpl<DrugstoreEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_DRUGSTORE);
-            selectListener.actionPerfomed(eo);
+            try {
+                selectListener.actionPerfomed(eo,stub);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         });
+        showAllDrugstores();
     }
 
     @FXML
@@ -311,11 +364,16 @@ public class ViewFX implements View, Initializable {
                 DrugstoreEntity drugstore = result.get();
                 drugstore.setId(drugstores.get(indexSelectElement).getId());
                 EventObjectImpl<DrugstoreEntity> eo = new EventObjectImpl<>(drugstore, Event.UPDATE_DRUGSTORE);
-                selectListener.actionPerfomed(eo);
+                try {
+                    selectListener.actionPerfomed(eo,stub);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             });
         } else {
             displayError("Выберите строку");
         }
+        showAllDrugstores();
     }
 
     @FXML
@@ -323,8 +381,13 @@ public class ViewFX implements View, Initializable {
         int index = tableDrugstores.getSelectionModel().getSelectedIndex();
         if (index != -1) {
             EventObjectImpl<DrugstoreEntity> eo = new EventObjectImpl<>(drugstores.get(index), Event.DELETE_DRUGSTORE);
-            selectListener.actionPerfomed(eo);
+            try {
+                selectListener.actionPerfomed(eo,stub);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
+        showAllDrugstores();
     }
 
     @FXML
@@ -335,8 +398,13 @@ public class ViewFX implements View, Initializable {
 
         result.ifPresent(priceEntity -> {
             EventObjectImpl<PriceEntity> eo = new EventObjectImpl<>(result.get(), Event.ADD_PRICE);
-            selectListener.actionPerfomed(eo);
+            try {
+                selectListener.actionPerfomed(eo,stub);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         });
+        showAllPrices();
     }
 
     @FXML
@@ -357,11 +425,16 @@ public class ViewFX implements View, Initializable {
             result.ifPresent(priceEntity -> {
                 PriceEntity price = result.get();
                 EventObjectImpl<PriceEntity> eo = new EventObjectImpl<>(price, Event.UPDATE_PRICE);
-                selectListener.actionPerfomed(eo);
+                try {
+                    selectListener.actionPerfomed(eo,stub);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             });
         } else {
             displayError("Выберите строку");
         }
+        showAllPrices();
     }
 
     @FXML
@@ -369,8 +442,13 @@ public class ViewFX implements View, Initializable {
         int index = tablePrices.getSelectionModel().getSelectedIndex();
         if (index != -1) {
             EventObjectImpl<PriceEntity> eo = new EventObjectImpl<>(prices.get(index), Event.DELETE_PRICE);
-            selectListener.actionPerfomed(eo);
+            try {
+                selectListener.actionPerfomed(eo,stub);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
+        showAllPrices();
     }
 
     @FXML
@@ -383,6 +461,7 @@ public class ViewFX implements View, Initializable {
             Stage exportWindow = new Stage();
             ExportWindowController.STAGE = exportWindow;
             ExportWindowController.LISTENER = selectListener;
+            ExportWindowController.STUB = stub;
             exportWindow.setScene(new Scene(root));
             exportWindow.initModality(Modality.WINDOW_MODAL);
             exportWindow.initOwner(STAGE);
@@ -403,6 +482,7 @@ public class ViewFX implements View, Initializable {
             Stage importWindow = new Stage();
             ImportWindowController.STAGE = importWindow;
             ImportWindowController.LISTENER = selectListener;
+            ImportWindowController.STUB = stub;
             importWindow.setScene(new Scene(root));
             importWindow.initModality(Modality.WINDOW_MODAL);
             importWindow.initOwner(STAGE);
@@ -418,6 +498,7 @@ public class ViewFX implements View, Initializable {
         initializeDrugstoreTable();
         initializeDrugTable();
         initializePriceTable();
+
     }
 
     private void initializeDrugTable() {
@@ -766,5 +847,9 @@ public class ViewFX implements View, Initializable {
                 }
             }
         }
+    }
+
+    public void setStub(Remote stub) {
+        this.stub = (View)stub;
     }
 }

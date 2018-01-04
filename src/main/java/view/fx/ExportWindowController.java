@@ -6,7 +6,6 @@ import event.EventObjectImpl;
 import event.UserRequestSelectListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
@@ -19,6 +18,7 @@ import view.View;
 
 import java.io.File;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class ExportWindowController implements Initializable{
@@ -26,6 +26,7 @@ public class ExportWindowController implements Initializable{
     static Stage STAGE;
     static UserRequestSelectListener LISTENER;
     private File path;
+    static View STUB;
 
     @FXML
     public TextField text_path;
@@ -72,7 +73,11 @@ public class ExportWindowController implements Initializable{
        prop.put("path", path);
        prop.put("type", type);
        EventObject<Map<String,Object>> eventObject = new EventObjectImpl<>(prop, Event.EXPORT);
-       LISTENER.actionPerfomed(eventObject);
+       try {
+           LISTENER.actionPerfomed(eventObject, STUB);
+       } catch (RemoteException e) {
+           e.printStackTrace();
+       }
 
        STAGE.close();
    }

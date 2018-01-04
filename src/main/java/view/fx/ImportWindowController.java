@@ -12,19 +12,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.import_export.FormatType;
 import model.import_export.marshalling.UnmarshallingException;
-import model.import_export.marshalling.AbstractUnmarshaller;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import view.View;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -36,6 +30,7 @@ public class ImportWindowController implements Initializable {
     private File file;
     static Stage STAGE;
     static UserRequestSelectListener LISTENER;
+    static View STUB;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -88,7 +83,11 @@ public class ImportWindowController implements Initializable {
         prop.put("type",type);
 
         EventObject<Map<String,Object>> eo = new EventObjectImpl<>(prop, Event.IMPORT);
-        LISTENER.actionPerfomed(eo);
+        try {
+            LISTENER.actionPerfomed(eo, STUB);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         STAGE.close();
     }
 

@@ -2,12 +2,13 @@ package model.entities;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "DRUGS_STORES")
 @IdClass(PriceEntityPK.class)
 @XmlRootElement
-public class PriceEntity {
+public class PriceEntity implements Serializable{
     private DrugEntity drug;
     private DrugstoreEntity drugstore;
     private Long cost;

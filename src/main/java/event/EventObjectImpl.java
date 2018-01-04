@@ -1,6 +1,8 @@
 package event;
 
-public class EventObjectImpl<T> implements EventObject<T> {
+import java.io.Serializable;
+
+public class EventObjectImpl<T> implements EventObject<T>, Serializable{
     private T object;
     private Event event;
 

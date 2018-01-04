@@ -5,12 +5,13 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @Table(name = "DRUGS")
 @XmlRootElement
-public class DrugEntity {
+public class DrugEntity implements Serializable{
 
     private UUID id;
     private String name;

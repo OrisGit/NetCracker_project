@@ -1,16 +1,27 @@
 package view.fx;
 
-import javafx.application.Application;
 import controller.Controller;
+import javafx.application.Application;
+import controller.ControllerImpl;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import view.View;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Logger;
 
 public class ViewTest extends Application {
+
+    public static Logger logger = Logger.getLogger("Client");
 
     public static void main(String[] args) {
         launch(args);
@@ -33,7 +44,26 @@ public class ViewTest extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Controller controller = new Controller(loader.getController());
-        controller.run();
+
+        Registry registry = LocateRegistry.getRegistry("localhost", 2099);
+        Controller controller = null;
+        try {
+            controller = (Controller)registry.lookup("server/controller");
+        } catch (NotBoundException e) {
+            logger.warning("Lookup failed");
+        }
+        logger.info("Lookup Ok");
+
+        Remote stub = null;
+        View view = loader.getController();
+        try {
+            stub = UnicastRemoteObject.exportObject(view, 0);
+        } catch (RemoteException e) {
+            logger.warning("Export filed");
+            System.exit(0);
+        }
+        view.setStub(stub);
+
+        controller.registerClient((View)stub);
     }
 }
