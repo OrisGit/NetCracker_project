@@ -59,6 +59,8 @@ public interface View {
      */
     void displayError(String message);
 
+    void export(String data, String path);
+
     void run();
 
 }

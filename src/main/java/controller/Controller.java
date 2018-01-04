@@ -4,8 +4,13 @@ import event.UserRequestSelectListener;
 import event.EventObject;
 import model.dao.*;
 import model.entities.*;
+import model.import_export.Exporter;
+import model.import_export.FormatType;
+import model.import_export.Importer;
 import model.interfaces.*;
 import view.*;
+
+import java.util.Map;
 
 public class Controller implements UserRequestSelectListener {
 
@@ -90,8 +95,32 @@ public class Controller implements UserRequestSelectListener {
                     priceDAO.update((PriceEntity) eo.getEventSource());
                     view.displayPrices(priceDAO.getAll());
                     break;
+                case EXPORT:
+                    if(eo.getEventSource() instanceof Map){
+                        Map<String, Object> prop = (Map<String, Object>)eo.getEventSource();
+                        if(prop.containsKey("path") && prop.containsKey("type")){
+                            String data = Exporter.export((FormatType) prop.get("type"),true);
+                            if(data!=null){
+                                view.export(data,(String)prop.get("path"));
+                                break;
+                            }
 
-
+                        }
+                    }
+                    view.displayError("Ошибка экспорта");
+                    break;
+                case IMPORT:
+                    if(eo.getEventSource() instanceof Map){
+                        Map<String, Object> prop = (Map<String, Object>)eo.getEventSource();
+                        if(prop.containsKey("data") && prop.containsKey("type")){
+                            String data = (String) prop.get("data");
+                            FormatType type = (FormatType)prop.get("type");
+                            Importer._import(data,type);
+                            break;
+                        }
+                    }
+                    view.displayError("Ошибка импорта");
+                    break;
             }
         }catch (Exception e){
             view.displayError(e.getMessage());

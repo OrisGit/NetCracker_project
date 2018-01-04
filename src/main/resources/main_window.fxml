@@ -18,7 +18,7 @@
      <menus>
        <Menu mnemonicParsing="false" text="Файл">
          <items>
-           <MenuItem mnemonicParsing="false" text="Импорт" />
+           <MenuItem mnemonicParsing="false" text="Импорт" onAction="#showImportWindow" />
                <MenuItem mnemonicParsing="false" onAction="#showExportWindow" text="Экспорт" />
          </items>
        </Menu>
