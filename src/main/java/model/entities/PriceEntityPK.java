@@ -1,54 +1,55 @@
 package model.entities;
 
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
+@Embeddable
 public class PriceEntityPK implements Serializable{
-    private DrugEntity drug;
-    private DrugstoreEntity drugstore;
+    @Column(name = "DRUG_ID")
+    private UUID drugID;
+    @Column(name = "DRUGSTORE_ID")
+    private UUID drugstoreID;
 
     public PriceEntityPK() {
     }
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "DRUG_ID")
-    public DrugEntity getDrug() {
-        return drug;
+    public PriceEntityPK(UUID drugID, UUID drugstoreID) {
+        this.drugID = drugID;
+        this.drugstoreID = drugstoreID;
     }
 
-    public void setDrug(DrugEntity drug) {
-        this.drug = drug;
+    public UUID getDrugID() {
+        return drugID;
     }
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "DRUGSTORE_ID")
-    public DrugstoreEntity getDrugstore() {
-        return drugstore;
+    public void setDrugID(UUID drug) {
+        this.drugID = drug;
     }
 
-    public void setDrugstore(DrugstoreEntity drugstore) {
-        this.drugstore = drugstore;
+    public UUID getDrugstoreID() {
+        return drugstoreID;
+    }
+
+    public void setDrugstoreID(UUID drugstore) {
+        this.drugstoreID = drugstore;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
 
-        PriceEntityPK that = (PriceEntityPK) o;
+        PriceEntityPK that = (PriceEntityPK) object;
 
-        if (!drug.equals(that.drug)) return false;
-        return drugstore.equals(that.drugstore);
+        if (!drugID.equals(that.drugID)) return false;
+        return drugstoreID.equals(that.drugstoreID);
     }
 
     @Override
     public int hashCode() {
-        int result = drug.hashCode();
-        result = 31 * result + drugstore.hashCode();
+        int result = drugID.hashCode();
+        result = 31 * result + drugstoreID.hashCode();
         return result;
     }
 }

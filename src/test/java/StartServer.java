@@ -1,5 +1,6 @@
 import controller.Controller;
 import controller.ControllerImpl;
+import model.HibernateUtil;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -40,6 +41,10 @@ public class StartServer {
             System.exit(0);
         }
         logger.info("OK");
+
+        HibernateUtil.getSessionFactory();
+        logger.info("Hibernate OK");
+
 
         while (true){
             try {

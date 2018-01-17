@@ -3,6 +3,7 @@ package view.fx;
 import event.Event;
 import event.EventObjectImpl;
 import event.UserRequestSelectListener;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -105,11 +106,13 @@ public class ViewFX implements View, Initializable, Serializable {
 
     @Override
     public void displayError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Ошибка");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.show();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.show();
+        });
     }
 
     @Override
@@ -419,7 +422,8 @@ public class ViewFX implements View, Initializable, Serializable {
             setTextInTextControl(content, "#cost", String.valueOf(prices.get(indexSelectElement).getCost()));
             setSelectInTable(content, "#drug", prices.get(indexSelectElement).getDrug(), drugs);
             setSelectInTable(content, "#drugstore", prices.get(indexSelectElement).getDrugstore(), drugstores);
-
+            disableTable(content, "#drugstore");
+            disableTable(content, "#drug");
             Optional<PriceEntity> result = dialog.showAndWait();
 
             result.ifPresent(priceEntity -> {
@@ -487,7 +491,10 @@ public class ViewFX implements View, Initializable, Serializable {
             importWindow.initModality(Modality.WINDOW_MODAL);
             importWindow.initOwner(STAGE);
             importWindow.setTitle("Импорт");
-            importWindow.show();
+            importWindow.showAndWait();
+            showAllPrices();
+            showAllDrugstores();
+            showAllDrugs();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -495,13 +502,13 @@ public class ViewFX implements View, Initializable, Serializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initializeDrugstoreTable();
-        initializeDrugTable();
-        initializePriceTable();
+        initializeDrugstoreTable(tableDrugstores);
+        initializeDrugTable(tableDrugs);
+        initializePriceTable(tablePrices);
 
     }
 
-    private void initializeDrugTable() {
+    private void initializeDrugTable(TableView tableDrugs) {
         tableDrugs.getColumns().clear();
         TableColumn<Drug, String> nameCol = new TableColumn<>("Название");
         nameCol.setCellValueFactory(
@@ -535,7 +542,7 @@ public class ViewFX implements View, Initializable, Serializable {
 
     }
 
-    private void initializeDrugstoreTable() {
+    private void initializeDrugstoreTable(TableView tableDrugstores) {
         tableDrugstores.getColumns().clear();
 
         TableColumn<Drugstore, String> nameCol = new TableColumn<>("Название");
@@ -571,7 +578,7 @@ public class ViewFX implements View, Initializable, Serializable {
         tableDrugstores.getColumns().addAll(nameCol, districtCol, addressCol, phoneCol, hoursCol, boolCol);
     }
 
-    private void initializePriceTable() {
+    private void initializePriceTable(TableView tablePrices) {
         tablePrices.getColumns().clear();
 
         TableColumn<Price, String> drugCol = new TableColumn<>("Препарат");
@@ -779,8 +786,24 @@ public class ViewFX implements View, Initializable, Serializable {
         grid.setVgap(10);
 
         TextField cost = new TextField();
-        TableView drugsTable = tableDrugs;
-        TableView drugstoresTable = tableDrugstores;
+        TableView drugsTable = new TableView();
+        TableView drugstoresTable = new TableView();
+
+        //TODO переделать
+        initializeDrugTable(drugsTable);
+
+        ObservableList<Drug> drugsTableItems = drugsTable.getItems();
+        drugsTableItems.clear();
+        LinkedList<Drug> drugList = Mapper.fromAll(drugs);
+        drugsTableItems.addAll(drugList);
+
+        initializeDrugstoreTable(drugstoresTable);
+
+        ObservableList<Drug> drugstoresTableItems = drugstoresTable.getItems();
+        drugstoresTableItems.clear();
+        LinkedList<Drug> drugstoresList = Mapper.fromAll(drugstores);
+        drugstoresTableItems.addAll(drugstoresList);
+
         drugsTable.setPrefSize(350, 200);
         drugstoresTable.setPrefSize(350, 200);
 
@@ -846,6 +869,13 @@ public class ViewFX implements View, Initializable, Serializable {
                     ((TableView) element).getSelectionModel().select(i);
                 }
             }
+        }
+    }
+
+    private void disableTable(Node node, String id) {
+        Node element = node.getScene().lookup(id);
+        if (element instanceof TableView) {
+            ((TableView) element).setDisable(true);
         }
     }
 

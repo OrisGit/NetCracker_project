@@ -7,6 +7,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import view.View;
 
@@ -17,6 +19,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class ViewTest extends Application {
@@ -45,25 +48,35 @@ public class ViewTest extends Application {
             e.printStackTrace();
         }
 
-        Registry registry = LocateRegistry.getRegistry("localhost", 2099);
-        Controller controller = null;
-        try {
-            controller = (Controller)registry.lookup("server/controller");
-        } catch (NotBoundException e) {
-            logger.warning("Lookup failed");
-        }
-        logger.info("Lookup Ok");
+        try{
+            Registry registry = LocateRegistry.getRegistry("localhost", 2099);
+            Controller controller = null;
+            try {
+                controller = (Controller)registry.lookup("server/controller");
+            } catch (NotBoundException e) {
+                logger.warning("Lookup failed");
+            }
+            logger.info("Lookup Ok");
 
-        Remote stub = null;
-        View view = loader.getController();
-        try {
-            stub = UnicastRemoteObject.exportObject(view, 0);
-        } catch (RemoteException e) {
-            logger.warning("Export filed");
+            Remote stub = null;
+            View view = loader.getController();
+            try {
+                stub = UnicastRemoteObject.exportObject(view, 0);
+            } catch (RemoteException e) {
+                logger.warning("Export filed");
+                System.exit(0);
+            }
+            view.setStub(stub);
+
+            controller.registerClient((View)stub);
+        }catch (Exception e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText(null);
+            alert.setContentText("Не возможно соедениться с сервером. Приложение будет закрыто...");
+            alert.showAndWait();
+            Platform.exit();
             System.exit(0);
         }
-        view.setStub(stub);
-
-        controller.registerClient((View)stub);
     }
 }

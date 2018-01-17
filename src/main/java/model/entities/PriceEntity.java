@@ -6,9 +6,10 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "DRUGS_STORES")
-@IdClass(PriceEntityPK.class)
 @XmlRootElement
 public class PriceEntity implements Serializable{
+
+    private PriceEntityPK id;
     private DrugEntity drug;
     private DrugstoreEntity drugstore;
     private Long cost;
@@ -20,11 +21,20 @@ public class PriceEntity implements Serializable{
         this.drug = drug;
         this.drugstore = drugstore;
         this.cost = cost;
+        this.id = new PriceEntityPK(drug.getId(),drugstore.getId());
     }
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "DRUG_ID")
+    @EmbeddedId
+    public PriceEntityPK getId() {
+        return id;
+    }
+
+    public void setId(PriceEntityPK id) {
+        this.id = id;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @MapsId("drugID")
     public DrugEntity getDrug() {
         return drug;
     }
@@ -33,9 +43,8 @@ public class PriceEntity implements Serializable{
         this.drug = drug;
     }
 
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "DRUGSTORE_ID")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @MapsId("drugstoreID")
     public DrugstoreEntity getDrugstore() {
         return drugstore;
     }
@@ -44,7 +53,6 @@ public class PriceEntity implements Serializable{
         this.drugstore = drugstore;
     }
 
-    @Basic
     @Column(name = "COST")
     public Long getCost() {
         return cost;
@@ -55,31 +63,24 @@ public class PriceEntity implements Serializable{
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
 
-        PriceEntity that = (PriceEntity) o;
+        PriceEntity that = (PriceEntity) object;
 
+        if (!id.equals(that.id)) return false;
         if (!drug.equals(that.drug)) return false;
         if (!drugstore.equals(that.drugstore)) return false;
-        return cost != null ? cost.equals(that.cost) : that.cost == null;
+        return cost.equals(that.cost);
     }
 
     @Override
     public int hashCode() {
-        int result = drug.hashCode();
+        int result = id.hashCode();
+        result = 31 * result + drug.hashCode();
         result = 31 * result + drugstore.hashCode();
-        result = 31 * result + (cost != null ? cost.hashCode() : 0);
+        result = 31 * result + cost.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "PriceEntity{" +
-                "drug=" + drug +
-                ", drugstore=" + drugstore +
-                ", cost=" + cost +
-                '}';
     }
 }
