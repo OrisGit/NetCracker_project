@@ -44,15 +44,5 @@ public class StartServer {
 
         HibernateUtil.getSessionFactory();
         logger.info("Hibernate OK");
-
-
-        while (true){
-            try {
-                Thread.sleep(Integer.MAX_VALUE);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 }
